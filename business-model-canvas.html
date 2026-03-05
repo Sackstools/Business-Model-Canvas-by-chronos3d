@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Model Canvas</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Caveat:wght@400;600&family=Playfair+Display:wght@700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f0e8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Header ─── */
+    header {
+      background: #1e1b18;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 20px;
+      background: linear-gradient(135deg, #D4915E, #C9A825);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #businessName {
+      background: #2a2722;
+      border: 1px solid #3a3228;
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: #e8e0d4;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      min-width: 180px;
+      outline: none;
+    }
+
+    #businessName:focus {
+      border-color: #D4915E;
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .item-count {
+      color: #8a8278;
+      font-size: 12px;
+    }
+
+    .tpl-label {
+      color: #8a8278;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .tpl-btn {
+      background: #2a2722;
+      color: #ccc5b9;
+      border: 1px solid #3a3228;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .tpl-btn:hover {
+      border-color: #D4915E;
+      color: #e8e0d4;
+    }
+
+    .export-btn {
+      background: #2a2722;
+      color: #e8e0d4;
+      border: 1px solid #3a3228;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .export-btn:hover {
+      border-color: #D4915E;
+    }
+
+    /* ─── Canvas Grid ─── */
+    .main-body {
+      flex: 1;
+      display: flex;
+      padding: 16px;
+      gap: 16px;
+      overflow: hidden;
+    }
+
+    .canvas-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-rows: 1fr 1fr 0.7fr;
+      gap: 10px;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    /* ─── Block ─── */
+    .canvas-block {
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      position: relative;
+    }
+
+    .block-header {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    .block-header .icon {
+      font-size: 18px;
+    }
+
+    .block-header h3 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .block-count {
+      font-size: 11px;
+      border-radius: 10px;
+      padding: 1px 8px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .block-hint {
+      margin: 0 0 8px 0;
+      font-size: 11px;
+      line-height: 1.3;
+      font-style: italic;
+      flex-shrink: 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .notes-area {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 8px;
+      min-height: 0;
+      padding-right: 2px;
+    }
+
+    .empty-msg {
+      text-align: center;
+      padding: 12px 4px;
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .add-row {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .add-input {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      background: #fff;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      color: #3a3228;
+      min-width: 0;
+    }
+
+    .add-btn {
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 700;
+      transition: transform 0.15s;
+    }
+
+    .add-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .block-ai-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: background 0.15s;
+      margin-left: 4px;
+    }
+
+    .color-picker {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.1);
+    }
+
+    .color-dot.active {
+      box-shadow: 0 0 0 2px #3a3228;
+      transform: scale(1.1);
+    }
+
+    .block-ai-btn:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .block-info-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: help;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: background 0.15s;
+      margin-left: auto;
+      margin-right: 4px;
+      color: inherit;
+      position: relative;
+    }
+
+    .block-info-btn:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .custom-tooltip {
+      visibility: hidden;
+      width: max-content;
+      max-width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 8px 12px;
+      position: absolute;
+      z-index: 20;
+      top: 135%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 11px;
+      font-weight: normal;
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.4;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-tooltip::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent #333 transparent;
+    }
+
+    .block-info-btn:hover .custom-tooltip,
+    .block-ai-btn:hover .custom-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* ─── Note Card ─── */
+    .note-card {
+      background: #FFFEF5;
+      border-radius: 2px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease;
+      position: relative;
+      font-family: 'Caveat', cursive;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #3a3228;
+      cursor: text;
+      word-break: break-word;
+    }
+
+    .note-card:hover {
+      transform: rotate(0deg) scale(1.03) !important;
+      box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.14);
+    }
+
+    .note-card .delete-btn {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      opacity: 0.4;
+      color: #666;
+      padding: 2px 4px;
+      line-height: 1;
+    }
+
+    .note-card .delete-btn:hover {
+      opacity: 1;
+    }
+
+    .note-card textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: 'Caveat', cursive;
+      font-size: 15px;
+      resize: none;
+      outline: none;
+      color: #3a3228;
+      line-height: 1.35;
+    }
+
+    /* ─── AI Sidebar ─── */
+    .ai-sidebar {
+      width: 195px;
+      flex-shrink: 0;
+      background: #1e1b18;
+      border-radius: 8px;
+      padding: 14px;
+      color: #e8e0d4;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .ai-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #D4915E 0%, #9673B9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .ai-header h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .mode-btn {
+      background: #2a2722;
+      border: 1px solid #3a3228;
+      border-radius: 6px;
+      padding: 6px 4px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      color: #8a8278;
+    }
+
+    .mode-btn.active {
+      background: #3a3228;
+      border-color: #D4915E;
+      color: #e8e0d4;
+    }
+
+    .mode-btn .mode-icon {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .mode-btn .mode-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .run-btn {
+      background: linear-gradient(135deg, #D4915E 0%, #BF5B3D 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .suggestions-area {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .suggestion-block-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .suggestion-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .suggestion-text {
+      flex: 1;
+      font-size: 12px;
+      color: #ccc5b9;
+      line-height: 1.4;
+      background: #2a2722;
+      border-radius: 4px;
+      padding: 6px 8px;
+    }
+
+    .suggestion-add-btn {
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 4px 8px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .ai-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #5a554d;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    .ai-toggle {
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      color: #fff;
+      transition: all 0.2s;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Business Model Canvas</h1>
+    <input type="text" id="businessName" placeholder="Nome do seu Negócio...">
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <span class="tpl-label">Modelos:</span>
+      <button class="tpl-btn" onclick="loadTemplate('blank')">Canvas Vazio</button>
+      <button class="tpl-btn" onclick="loadTemplate('saas')">SaaS Startup</button>
+      <button class="tpl-btn" onclick="loadTemplate('ecommerce')">E-Commerce</button>
+      <button class="tpl-btn" onclick="loadTemplate('marketplace')">Marketplace</button>
+    </div>
+    <div class="header-right">
+      <span class="item-count" id="itemCount">0 itens</span>
+      <button class="export-btn" onclick="exportJSON()">📄 Exportar JSON</button>
+      <button class="export-btn" onclick="exportMarkdown()">📝 Exportar Markdown</button>
+      <button class="ai-toggle" id="aiToggle" onclick="toggleAI()"
+        style="background:linear-gradient(135deg,#D4915E 0%,#9673B9 100%)">🧠 IA</button>
+    </div>
+  </header>
+
+  <div class="main-body">
+    <div class="canvas-grid" id="canvasGrid"></div>
+    <div class="ai-sidebar" id="aiSidebar">
+      <div class="ai-header">
+        <div class="ai-icon">🧠</div>
+        <h3>ESTRATEGISTA IA</h3>
+      </div>
+      <!-- API Key -->
+      <div style="flex-shrink:0">
+        <label
+          style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#8a8278;font-weight:600;display:block;margin-bottom:4px">🔑
+          Chave Google Gemini <span style="color:#4E8A50;font-weight:700">GRÁTIS</span></label>
+        <div style="display:flex;gap:4px">
+          <input type="password" id="apiKey" placeholder="AIzaSy..."
+            style="flex:1;background:#2a2722;border:1px solid #3a3228;border-radius:4px;padding:6px 8px;color:#e8e0d4;font-size:11px;font-family:'DM Sans',sans-serif;outline:none"
+            onfocus="this.style.borderColor='#D4915E'" onblur="this.style.borderColor='#3a3228'"
+            onchange="saveApiKey()">
+          <button onclick="toggleKeyVisibility()"
+            style="background:#2a2722;border:1px solid #3a3228;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:12px;color:#8a8278"
+            title="Mostrar/ocultar chave">👁</button>
+        </div>
+        <a href="https://aistudio.google.com/apikey" target="_blank"
+          style="font-size:10px;color:#D4915E;text-decoration:none;display:inline-block;margin-top:4px">Obter chave
+          grátis em aistudio.google.com →</a>
+      </div>
+      <div class="mode-grid" id="modeGrid"></div>
+      <button class="run-btn" id="runBtn" onclick="runAI()">Executar Preencher</button>
+      <div id="aiContent">
+        <div class="ai-placeholder">Insira sua chave Gemini gratuita acima, selecione um modo e clique em Executar para
+          obter insights estratégicos com IA.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── Data ────────────────────────────────────────────────────
+    const BLOCKS = [
+      { id: "key_partners", title: "Parceiros-Chave", icon: "🤝", hint: "Quem são seus parceiros e fornecedores principais?", examples: "Ex: Provedor de Cloud, Agências, Fabricantes, Afiliados.", color: "#E8D5B7", accent: "#B8956A" },
+      { id: "key_activities", title: "Atividades-Chave", icon: "⚡", hint: "O que sua empresa deve fazer muito bem para o negócio funcionar?", examples: "Ex: Desenvolvimento de software, Logística, Marketing, Pesquisa e Desenvolvimento.", color: "#D5E8D4", accent: "#6B9E6A" },
+      { id: "key_resources", title: "Recursos-Chave", icon: "🏗️", hint: "Quais os recursos indispensáveis para entregar o valor?", examples: "Ex: Equipe tech, Servidores, Marca, Patentes, Dinheiro em caixa.", color: "#DAE8FC", accent: "#6C8EBF" },
+      { id: "value_propositions", title: "Proposta de Valor", icon: "💎", hint: "Qual problema você ajuda a resolver? Qual valor entregamos?", examples: "Ex: Status/Marca, Preço acessível, Redução de risco, Conveniência, Customização.", color: "#F8E6D0", accent: "#D4915E" },
+      { id: "customer_relationships", title: "Relacionamento", icon: "💬", hint: "Como você atrai, retém e interage com o cliente?", examples: "Ex: Assistência pessoal, Self-service, Comunidades, Cocriação, Automatizado.", color: "#E6D0F8", accent: "#9673B9" },
+      { id: "channels", title: "Canais", icon: "🚀", hint: "Por onde o cliente conhece, compra e recebe o valor?", examples: "Ex: Redes sociais, Loja física, App próprio, Distribuidores parceiros.", color: "#FCE4EC", accent: "#C9616B" },
+      { id: "customer_segments", title: "Segmentos de Clientes", icon: "👥", hint: "Para quem você está criando valor?", examples: "Ex: Mulheres de 25-40 anos, Empresas B2B de SaaS, Jovens gamers.", color: "#FFF9C4", accent: "#C9A825" },
+      { id: "cost_structure", title: "Estrutura de Custos", icon: "📉", hint: "Quais são os principais custos do seu negócio?", examples: "Ex: Salários da equipa, Manutenção de servidores, Investimento em Ads, Custos de envio.", color: "#FFCCBC", accent: "#BF5B3D" },
+      { id: "revenue_streams", title: "Fontes de Receita", icon: "💰", hint: "Como a empresa ganha dinheiro com cada segmento?", examples: "Ex: Venda de ativo, Assinatura mensal, Aluguel, Licenciamento, Taxa de corretagem.", color: "#C8E6C9", accent: "#4E8A50" },
+    ];
+
+    const GRID_POS = [
+      { col: "1", row: "1 / 3" },
+      { col: "2", row: "1" },
+      { col: "2", row: "2" },
+      { col: "3", row: "1 / 3" },
+      { col: "4", row: "1" },
+      { col: "4", row: "2" },
+      { col: "5", row: "1 / 3" },
+      { col: "1 / 3", row: "3" },
+      { col: "3 / 6", row: "3" },
+    ];
+
+    const TEMPLATES = {
+      blank: {},
+      saas: {
+        key_partners: ["Provedor de infraestrutura cloud (AWS/GCP)", "Processamento de pagamentos (Stripe)"],
+        key_activities: ["Desenvolvimento e iteração do produto", "Onboarding e suporte ao cliente"],
+        key_resources: ["Equipe de engenharia", "Algoritmos proprietários / PI"],
+        value_propositions: ["Automatizar fluxos de trabalho manuais", "Dashboard de analytics em tempo real"],
+        customer_relationships: ["Autoatendimento com tier de suporte premium", "Fórum da comunidade e base de conhecimento"],
+        channels: ["Crescimento via produto (freemium)", "Marketing de conteúdo e SEO"],
+        customer_segments: ["Gerentes de operações de PMEs", "Departamentos de TI corporativos"],
+        cost_structure: ["Salários de engenharia", "Hospedagem cloud e infraestrutura"],
+        revenue_streams: ["Assinaturas mensais/anuais", "Preço customizado enterprise"],
+      },
+      ecommerce: {
+        key_partners: ["Fornecedores e fabricantes", "Transportadoras e logística"],
+        key_activities: ["Gestão de estoque", "Campanhas de marketing digital"],
+        key_resources: ["Plataforma de e-commerce", "Armazém e centro de distribuição"],
+        value_propositions: ["Seleção curada de produtos", "Entrega rápida e devoluções fáceis"],
+        customer_relationships: ["Recomendações personalizadas", "Programa de fidelidade"],
+        channels: ["Loja online e app mobile", "Redes sociais e influenciadores"],
+        customer_segments: ["Consumidores digitais (25-45 anos)", "Compradores de presentes e sazonais"],
+        cost_structure: ["Custo do produto (CMV)", "Frete e fulfillment"],
+        revenue_streams: ["Vendas diretas de produtos", "Taxas de assinatura premium"],
+      },
+      marketplace: {
+        key_partners: ["Fornecedores / vendedores do lado da oferta", "Verificação de pagamento e identidade"],
+        key_activities: ["Matching entre oferta e demanda", "Moderação de confiança e segurança"],
+        key_resources: ["Tecnologia da plataforma", "Efeitos de rede e base de usuários"],
+        value_propositions: ["Reduzir atrito entre compradores e vendedores", "Confiança através de avaliações e garantias"],
+        customer_relationships: ["Autoatendimento automatizado", "Resolução de disputas"],
+        channels: ["Webapp e mobile", "SEO e programas de indicação"],
+        customer_segments: ["Compradores buscando conveniência", "Vendedores buscando distribuição"],
+        cost_structure: ["Desenvolvimento e manutenção da plataforma", "Aquisição de clientes (ambos os lados)"],
+        revenue_streams: ["Taxas de transação / comissão", "Listagens em destaque e anúncios"],
+      },
+    };
+    const MODES = [
+      { id: "fill_gaps", label: "Preencher", icon: "🧩" },
+      { id: "validate", label: "Validar", icon: "🔍" },
+    ];
+
+    let canvasData = {};
+    let nextId = 100;
+    let currentMode = "fill_gaps";
+    let showAI = true;
+    window.selectedColors = {}; // Armazena a cor selecionada por bloco
+    const NOTE_COLORS = ['#ffffff', '#fef08a', '#bfdbfe', '#bbf7d0', '#fbcfe8'];
+
+    BLOCKS.forEach(b => {
+      canvasData[b.id] = [];
+      window.selectedColors[b.id] = '#ffffff';
+    });
+
+    // ─── Render ──────────────────────────────────────────────────
+    function render() {
+      const grid = document.getElementById('canvasGrid');
+      grid.innerHTML = '';
+      BLOCKS.forEach((block, idx) => {
+        const pos = GRID_POS[idx];
+        const notes = canvasData[block.id] || [];
+        const wrapper = document.createElement('div');
+        wrapper.style.gridColumn = pos.col;
+        wrapper.style.gridRow = pos.row;
+
+        wrapper.innerHTML = `
+      <div class="canvas-block" style="background:${block.color};border:1px solid ${block.accent}33">
+        <div class="block-header" style="flex-direction: column; align-items: stretch; gap: 6px;">
+          <div style="display:flex; align-items:center; gap:6px; min-width:0; width:100%;">
+            <span class="icon" style="flex-shrink:0; font-size:16px;">${block.icon}</span>
+            <h3 style="color:${block.accent}; margin:0; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:4px;" title="${block.title}">${block.title}</h3>
+          </div>
+          
+          <div style="display:flex; align-items:center; justify-content:flex-end; gap:2px; flex-shrink:0; width:100%;">
+            <button class="block-info-btn" style="color:${block.accent}; margin-right:4px; margin-left:0;">
+              <span>ℹ️</span>
+              <div class="custom-tooltip"><strong>Essencial:</strong> ${block.hint}<br><br><em>${block.examples}</em></div>
+            </button>
+            <span class="block-count" style="background:${block.accent}22;color:${block.accent}; margin-right:4px;">${notes.length}</span>
+            <button class="block-ai-btn" style="position:relative; margin-left:0; padding:2px;" onclick="brainstormBlock('${block.id}')">
+              💡
+              <div class="custom-tooltip" style="margin-left:-40px;">Gerar ideias com IA para este bloco</div>
+            </button>
+            <button class="block-ai-btn" style="position:relative; margin-left:0; padding:2px;" onclick="analyzeBlock('${block.id}')">
+              🧠
+              <div class="custom-tooltip" style="margin-left:-60px;">Analisar Coerência e Legitimidade deste módulo</div>
+            </button>
+          </div>
+        </div>
+        <div class="notes-area" id="notes-${block.id}">
+          ${notes.length === 0 ? `
+            <div class="empty-msg" style="color:${block.accent}99; display: flex; flex-direction: column; justify-content: center; height: 100%; text-align: center; gap: 8px;">
+              <span style="font-weight: 700; font-size: 13px;">${block.hint}</span>
+              <span style="font-size: 11px; opacity: 0.8;">${block.examples}</span>
+              <span style="margin-top: 12px; font-style: italic; font-size: 11px;">Clique em + para adicionar itens</span>
+            </div>`
+            : ''}
+        </div>
+        <div style="display:flex; flex-direction:column; flex-shrink:0;">
+          <div class="color-picker" id="picker-${block.id}">
+            ${NOTE_COLORS.map(c => `
+              <div class="color-dot ${window.selectedColors[block.id] === c ? 'active' : ''}" 
+                   style="background:${c}; ${c === '#ffffff' ? 'border:1px solid #ccc' : 'border:1px solid transparent'}" 
+                   onclick="selectColor('${block.id}', '${c}', this)">
+              </div>
+            `).join('')}
+          </div>
+          <div class="add-row">
+            <input class="add-input" id="input-${block.id}" placeholder="Adicionar item..." style="border:1px solid ${block.accent}44" onfocus="this.style.borderColor='${block.accent}'" onblur="this.style.borderColor='${block.accent}44'" onkeydown="if(event.key==='Enter')addNote('${block.id}')">
+            <button class="add-btn" style="background:${block.accent}" onclick="addNote('${block.id}')" title="Adicionar item">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+        grid.appendChild(wrapper);
+
+        const notesArea = wrapper.querySelector(`#notes-${block.id}`);
+        notes.forEach(note => {
+          const rot = ((note.id * 7 + 3) % 5) - 2;
+          const card = document.createElement('div');
+          card.className = 'note-card';
+          card.style.background = note.color || '#ffffff';
+          card.style.borderLeft = `3px solid ${block.accent}`;
+          card.style.transform = `rotate(${rot}deg)`;
+          card.innerHTML = `
+        <span class="note-text">${escapeHtml(note.text)}</span>
+        <button class="delete-btn" onclick="event.stopPropagation();deleteNote('${block.id}',${note.id})" title="Remover">✕</button>
+      `;
+          card.addEventListener('click', () => startEdit(card, block.id, note.id, note.text, block.accent));
+          notesArea.appendChild(card);
+        });
+      });
+
+      updateCount();
+      renderModes();
+    }
+
+    function startEdit(card, blockId, noteId, currentText, accent) {
+      const span = card.querySelector('.note-text');
+      if (card.querySelector('textarea')) return;
+      const ta = document.createElement('textarea');
+      ta.value = currentText;
+      ta.style.cssText = 'width:100%;border:none;background:transparent;font-family:Caveat,cursive;font-size:15px;resize:none;outline:none;color:#3a3228;line-height:1.35';
+      ta.rows = 2;
+      span.replaceWith(ta);
+      ta.focus();
+      const save = () => {
+        const val = ta.value.trim();
+        if (val) {
+          const notes = canvasData[blockId];
+          const n = notes.find(x => x.id === noteId);
+          if (n) n.text = val;
+        }
+        render();
+        saveLocal();
+      };
+      ta.addEventListener('blur', save);
+      ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); } });
+    }
+
+    function selectColor(blockId, color, element) {
+      window.selectedColors[blockId] = color;
+      const picker = document.getElementById(`picker-${blockId}`);
+      if (picker) {
+        picker.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+        element.classList.add('active');
+      }
+    }
+
+    function addNote(blockId) {
+      const input = document.getElementById(`input-${blockId}`);
+      const text = input.value.trim();
+      if (!text) return;
+      const color = window.selectedColors[blockId] || '#ffffff';
+      canvasData[blockId].push({ id: nextId++, text, color });
+      input.value = '';
+      render();
+      saveLocal();
+    }
+
+    function deleteNote(blockId, noteId) {
+      canvasData[blockId] = canvasData[blockId].filter(n => n.id !== noteId);
+      render();
+      saveLocal();
+    }
+
+    function updateCount() {
+      let total = 0;
+      BLOCKS.forEach(b => total += (canvasData[b.id] || []).length);
+      document.getElementById('itemCount').textContent = total + (total === 1 ? ' item' : ' itens');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ─── Templates ───────────────────────────────────────────────
+    function loadTemplate(key) {
+      const tpl = TEMPLATES[key];
+      BLOCKS.forEach(b => {
+        canvasData[b.id] = (tpl[b.id] || []).map((text, i) => ({ id: nextId++, text }));
+      });
+      const nameInput = document.getElementById('businessName');
+      if (key !== 'blank' && !nameInput.value) {
+        const names = { saas: 'SaaS Startup — Exemplo', ecommerce: 'E-Commerce — Exemplo', marketplace: 'Marketplace — Exemplo' };
+        nameInput.value = names[key] || '';
+      }
+      render();
+      saveLocal();
+    }
+
+    // ─── Export ──────────────────────────────────────────────────
+    function exportJSON() {
+      const name = document.getElementById('businessName').value;
+      const pitch = document.getElementById('businessPitch').value;
+      const obj = {
+        nomeNegocio: name,
+        pitch: pitch,
+        criadoEm: new Date().toISOString(),
+        canvas: {}
+      };
+      BLOCKS.forEach(b => obj.canvas[b.id] = (canvasData[b.id] || []).map(n => n.text));
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+      downloadBlob(blob, `${(name || 'canvas').replace(/\s+/g, '_')}_BMC.json`);
+    }
+
+    function exportMarkdown() {
+      const name = document.getElementById('businessName').value;
+      const pitch = document.getElementById('businessPitch').value;
+      let md = `# Business Model Canvas${name ? ': ' + name : ''}\n`;
+      if (pitch) md += `**Pitch / Visão Geral:** ${pitch}\n\n`;
+      md += `*Gerado em ${new Date().toLocaleDateString('pt-BR')}*\n\n`;
+      BLOCKS.forEach(b => {
+        const items = canvasData[b.id] || [];
+        md += `## ${b.icon} ${b.title}\n`;
+        if (items.length) items.forEach(i => md += `- ${i.text}\n`);
+        else md += `*(vazio)*\n`;
+        md += '\n';
+      });
+      const blob = new Blob([md], { type: 'text/markdown' });
+      downloadBlob(blob, `${(name || 'canvas').replace(/\s+/g, '_')}_BMC.md`);
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ─── AI Sidebar ──────────────────────────────────────────────
+    function renderModes() {
+      const grid = document.getElementById('modeGrid');
+      grid.innerHTML = '';
+      MODES.forEach(m => {
+        const btn = document.createElement('button');
+        btn.className = 'mode-btn' + (currentMode === m.id ? ' active' : '');
+        btn.innerHTML = `<div class="mode-icon">${m.icon}</div><div class="mode-label">${m.label}</div>`;
+        btn.onclick = () => { currentMode = m.id; renderModes(); document.getElementById('runBtn').textContent = `Executar ${m.label}`; };
+        grid.appendChild(btn);
+      });
+    }
+
+    function toggleAI(forceOpen) {
+      showAI = typeof forceOpen === 'boolean' ? forceOpen : !showAI;
+      document.getElementById('aiSidebar').style.display = showAI ? 'flex' : 'none';
+      document.getElementById('aiToggle').style.background = showAI ? 'linear-gradient(135deg,#D4915E 0%,#9673B9 100%)' : '#2a2722';
+    }
+
+    async function runAI() {
+      const btn = document.getElementById('runBtn');
+      const content = document.getElementById('aiContent');
+      btn.textContent = '⏳ Analisando...';
+      btn.disabled = true;
+      const name = document.getElementById('businessName').value;
+
+      const summary = BLOCKS.map(b => {
+        const items = canvasData[b.id] || [];
+        return `${b.title}: ${items.length > 0 ? items.map(i => i.text).join('; ') : '(vazio)'}`;
+      }).join('\n');
+
+      const instructions = {
+        fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos com conteúdo, sugira 1 item complementar. Retorne JSON onde chaves são IDs dos blocos e valores são arrays de strings em português. IDs: ${BLOCKS.map(b => b.id).join(', ')}.`,
+        validate: `Você é um auditor rigoroso de Business Model Canvas. Analise a COERÊNCIA INTERNA entre todos os blocos e identifique problemas. Verifique:
+1. INCOERÊNCIAS: A proposta de valor realmente atende os segmentos? Os canais são adequados para esses segmentos? As fontes de receita são compatíveis com a proposta de valor? Os recursos e atividades sustentam a proposta? A estrutura de custos reflete as atividades e recursos?
+2. ITENS VAGOS: Itens genéricos demais que precisam ser mais específicos
+3. CONTRADIÇÕES: Itens que se contradizem entre blocos diferentes
+4. LACUNAS LÓGICAS: Blocos vazios que deveriam ter conteúdo dado o restante do canvas
+5. DUPLICATAS: Itens repetidos ou redundantes entre blocos
+
+Retorne um JSON com esta estrutura exata:
+{
+  "_nota": número de 0 a 100 representando a saúde geral do canvas,
+  "_resumo": "frase resumindo o diagnóstico geral",
+  "_problemas": [
+    {"tipo": "INCOERÊNCIA|VAGO|CONTRADIÇÃO|LACUNA|DUPLICATA", "gravidade": "alta|media|baixa", "blocos": ["id_bloco1","id_bloco2"], "descricao": "explicação clara do problema"},
+    ...mais problemas
+  ],
+  "_pontos_fortes": ["ponto forte 1", "ponto forte 2"]
+}
+
+Seja rigoroso mas construtivo. Identifique TODOS os problemas. IDs válidos dos blocos: ${BLOCKS.map(b => b.id).join(', ')}.`,
+      };
+
+      const prompt = `Você é um especialista em estratégia de negócios analisando um Business Model Canvas.
+${instructions[currentMode]}
+
+IMPORTANTE: Responda APENAS com JSON válido, sem markdown, sem crases, sem explicação. Tudo em português brasileiro.
+
+Canvas Atual:
+${summary}`;
+
+      // Check if canvas has enough content for validation
+      if (currentMode === 'validate') {
+        const filledBlocks = BLOCKS.filter(b => (canvasData[b.id] || []).length > 0).length;
+        if (filledBlocks < 3) {
+          content.innerHTML = `<div style="background:#3a2a1a;border:1px solid #8b6030;border-radius:6px;padding:10px;font-size:12px;color:#e8b44c">⚠️ Preencha pelo menos 3 blocos do canvas antes de validar. Atualmente apenas ${filledBlocks} bloco(s) preenchido(s). Use o modo <strong>Preencher</strong> ou um template para começar.</div>`;
+          btn.textContent = `Executar ${MODES.find(m => m.id === currentMode).label}`;
+          btn.disabled = false;
+          return;
+        }
+      }
+
+      try {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        if (!apiKey) {
+          content.innerHTML = `<div style="background:#3a2a1a;border:1px solid #8b6030;border-radius:6px;padding:10px;font-size:12px;color:#e8b44c">⚠️ Insira sua chave Gemini no campo acima. Obtenha grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#D4915E">aistudio.google.com</a></div>`;
+          btn.textContent = `Executar ${MODES.find(m => m.id === currentMode).label}`;
+          btn.disabled = false;
+          return;
+        }
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 1500, responseMimeType: 'application/json' }
+          })
+        });
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          const errMsg = errData?.error?.message || `Erro HTTP ${resp.status}`;
+          throw new Error(errMsg);
+        }
+        const data = await resp.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const cleaned = text.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        if (currentMode === 'validate') {
+          renderValidation(parsed);
+        } else {
+          renderSuggestions(parsed);
+        }
+      } catch (err) {
+        content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha na IA: ${escapeHtml(err.message)}.<br><br>Verifique se a chave está correta em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#D4915E">aistudio.google.com</a></div>`;
+        console.error(err);
+      }
+      btn.textContent = `Executar ${MODES.find(m => m.id === currentMode).label}`;
+      btn.disabled = false;
+    }
+
+    function renderSuggestions(suggestions) {
+      const content = document.getElementById('aiContent');
+      content.innerHTML = '';
+      const area = document.createElement('div');
+      area.className = 'suggestions-area';
+
+      Object.entries(suggestions).forEach(([blockId, items]) => {
+        const block = BLOCKS.find(b => b.id === blockId);
+        if (!block || !items?.length) return;
+        const section = document.createElement('div');
+        section.innerHTML = `<div class="suggestion-block-title" style="color:${block.accent}">${block.icon} ${block.title}</div>`;
+        items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'suggestion-item';
+          row.innerHTML = `
+        <div class="suggestion-text">${escapeHtml(item)}</div>
+        <button class="suggestion-add-btn" style="background:${block.accent}33;color:${block.accent}" title="Adicionar ao canvas">+ Usar</button>
+      `;
+          row.querySelector('button').onclick = () => {
+            const cleaned = item.replace(/^(⚠️|🔄|✨)\s*/, '');
+            const color = window.selectedColors[blockId] || '#ffffff';
+            canvasData[blockId].push({ id: nextId++, text: cleaned, color });
+            render(); saveLocal();
+            row.style.opacity = '0.4';
+            row.querySelector('button').disabled = true;
+            row.querySelector('button').textContent = '✓';
+          };
+          section.appendChild(row);
+        });
+        area.appendChild(section);
+      });
+      content.appendChild(area);
+    }
+
+    function renderValidation(data) {
+      const content = document.getElementById('aiContent');
+      content.innerHTML = '';
+      const area = document.createElement('div');
+      area.style.cssText = 'flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;min-height:0';
+
+      // ─── Nota / Score ───
+      const nota = data._nota ?? '?';
+      const notaColor = nota >= 80 ? '#4E8A50' : nota >= 50 ? '#C9A825' : '#BF5B3D';
+      const notaLabel = nota >= 80 ? 'Excelente' : nota >= 60 ? 'Bom' : nota >= 40 ? 'Regular' : 'Crítico';
+      area.innerHTML += `
+    <div style="text-align:center;padding:12px;background:#2a2722;border-radius:8px;border:2px solid ${notaColor}44">
+      <div style="font-size:36px;font-weight:900;color:${notaColor};font-family:'Playfair Display',serif;line-height:1">${nota}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${notaColor};margin-top:2px">${notaLabel}</div>
+      <div style="font-size:11px;color:#8a8278;margin-top:6px;line-height:1.4">${escapeHtml(data._resumo || '')}</div>
+    </div>
+  `;
+
+      // ─── Pontos Fortes ───
+      if (data._pontos_fortes?.length) {
+        let fortes = '<div style="margin-top:4px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#4E8A50;margin-bottom:6px">✅ Pontos Fortes</div>';
+        data._pontos_fortes.forEach(p => {
+          fortes += `<div style="font-size:12px;color:#ccc5b9;line-height:1.4;background:#2a2722;border-radius:4px;padding:6px 8px;margin-bottom:4px;border-left:3px solid #4E8A50">${escapeHtml(p)}</div>`;
+        });
+        fortes += '</div>';
+        area.innerHTML += fortes;
+      }
+
+      // ─── Problemas ───
+      if (data._problemas?.length) {
+        const gravColors = { alta: '#BF5B3D', media: '#C9A825', baixa: '#6C8EBF' };
+        const gravIcons = { alta: '🔴', media: '🟡', baixa: '🔵' };
+        const gravLabels = { alta: 'ALTA', media: 'MÉDIA', baixa: 'BAIXA' };
+        const tipoIcons = { 'INCOERÊNCIA': '⚡', 'VAGO': '💨', 'CONTRADIÇÃO': '❌', 'LACUNA': '🕳️', 'DUPLICATA': '♊' };
+
+        // Group by severity
+        const byGrav = { alta: [], media: [], baixa: [] };
+        data._problemas.forEach(p => {
+          const g = p.gravidade || 'media';
+          if (byGrav[g]) byGrav[g].push(p);
+          else byGrav.media.push(p);
+        });
+
+        ['alta', 'media', 'baixa'].forEach(grav => {
+          if (!byGrav[grav].length) return;
+          let html = `<div style="margin-top:4px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${gravColors[grav]};margin-bottom:6px">${gravIcons[grav]} Gravidade ${gravLabels[grav]} (${byGrav[grav].length})</div>`;
+          byGrav[grav].forEach(prob => {
+            const blocoNames = (prob.blocos || []).map(id => {
+              const bl = BLOCKS.find(b => b.id === id);
+              return bl ? bl.icon + ' ' + bl.title : id;
+            }).join(' ↔ ');
+            const tipoIcon = tipoIcons[prob.tipo] || '⚠️';
+            html += `
+          <div style="background:#2a2722;border-radius:4px;padding:8px;margin-bottom:6px;border-left:3px solid ${gravColors[grav]}">
+            <div style="font-size:10px;color:${gravColors[grav]};font-weight:700;letter-spacing:0.05em;margin-bottom:3px">${tipoIcon} ${escapeHtml(prob.tipo || 'PROBLEMA')}</div>
+            <div style="font-size:12px;color:#ccc5b9;line-height:1.4">${escapeHtml(prob.descricao || '')}</div>
+            ${blocoNames ? `<div style="font-size:10px;color:#8a8278;margin-top:4px">📍 ${blocoNames}</div>` : ''}
+          </div>
+        `;
+          });
+          html += '</div>';
+          area.innerHTML += html;
+        });
+      } else {
+        area.innerHTML += '<div style="text-align:center;padding:12px;color:#4E8A50;font-size:13px;font-weight:600">✅ Nenhum problema encontrado!</div>';
+      }
+
+      content.appendChild(area);
+    }
+
+    async function analyzeBlock(blockId) {
+      toggleAI(true);
+      const content = document.getElementById('aiContent');
+      const block = BLOCKS.find(b => b.id === blockId);
+      content.innerHTML = `<div style="padding:20px;text-align:center;color:#8a8278;font-size:12px;">⏳ Analisando ${block.title}...</div>`;
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true;
+
+      const items = canvasData[blockId] || [];
+      const name = document.getElementById('businessName').value;
+      const pitch = document.getElementById('businessPitch').value;
+
+      const ctx = BLOCKS.map(b => `${b.title}: ${(canvasData[b.id] || []).length > 0 ? (canvasData[b.id] || []).map(i => i.text).join('; ') : '(vazio)'}`).join('\\n');
+
+      const prompt = `Você é um especialista em estratégia de negócios. O usuário está preenchendo o bloco "${block.title}" do seu Business Model Canvas${name ? ' para o negócio "' + name + '"' : ''}.
+${pitch ? 'Visão Geral do Projeto (Pitch): "' + pitch + '"\\n' : ''}
+Os itens atuais neste bloco são:
+${items.length > 0 ? items.map(i => "- " + i.text).join('\\n') : '(vazio)'}
+
+Contexto do canvas inteiro (para garantir legitimidade perante o resto do negócio):
+${ctx}
+
+Objetivo: Analise a coerência e legitimidade individual APENAS do bloco "${block.title}", focando se os itens fazem sentido, se são realistas e bem alinhados com o resto do canvas.
+Retorne um JSON com:
+{
+  "_nota_modulo": número de 0 a 100 indicando a qualidade (vazio costuma ser nota muito baixa),
+  "_analise": "análise detalhada focada na aderência à função do bloco e viabilidade",
+  "_pontos_atencao": ["ponto 1", "ponto 2..."] (se nenhum, array vazio)
+}
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro.`;
+
+      try {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        if (!apiKey) {
+          throw new Error("Insira sua chave Gemini no campo acima.");
+        }
+
+        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 1000, responseMimeType: 'application/json' }
+          })
+        });
+        if (!resp.ok) throw new Error("Erro de conexão / Chave inválida");
+        const data = await resp.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const parsed = JSON.parse(text.replace(/\`\`\`json|\`\`\`/g, '').trim());
+        renderBlockAnalysis(parsed, block);
+      } catch (err) {
+        content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha na análise: ${escapeHtml(err.message)}</div>`;
+      }
+      btn.disabled = false;
+    }
+
+    async function brainstormBlock(blockId) {
+      toggleAI(true);
+      const content = document.getElementById('aiContent');
+      const block = BLOCKS.find(b => b.id === blockId);
+      content.innerHTML = `<div style="padding:20px;text-align:center;color:#8a8278;font-size:12px;">⏳ Gerando ideias para ${block.title}...</div>`;
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true;
+
+      const name = document.getElementById('businessName').value;
+      const pitch = document.getElementById('businessPitch').value;
+      const ctx = BLOCKS.map(b => `${b.title}: ${(canvasData[b.id] || []).length > 0 ? (canvasData[b.id] || []).map(i => i.text).join('; ') : '(vazio)'}`).join('\\n');
+
+      const prompt = `Você é um co-fundador visionário e estrategista focado em ideação para um Business Model Canvas${name ? ' para o negócio "' + name + '"' : ''}.
+${pitch ? 'Visão Geral do Projeto (Pitch): "' + pitch + '"\\n' : ''}
+Contexto do canvas atual:
+${ctx}
+
+Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}". Não repita exatamente o que já está lá. Sugira 3 a 5 itens práticos e aplicáveis ao modelo de negócio.
+Retorne um JSON com esta estrutura:
+{
+  "${block.id}": [
+    "✨ Exemplo de ideia genial 1",
+    "✨ Exemplo de ideia inovadora 2",
+    "✨ Exemplo de ideia prática 3"
+  ]
+}
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Prefira sugestões acionáveis e diretas.`;
+
+      try {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        if (!apiKey) throw new Error("Insira sua chave Gemini no campo acima.");
+
+        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.8, maxOutputTokens: 1000, responseMimeType: 'application/json' }
+          })
+        });
+        if (!resp.ok) throw new Error("Erro de conexão / Chave inválida");
+        const data = await resp.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const parsed = JSON.parse(text.replace(/\`\`\`json|\`\`\`/g, '').trim());
+        renderSuggestions(parsed);
+      } catch (err) {
+        content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha ao gerar ideias: ${escapeHtml(err.message)}</div>`;
+      }
+      btn.disabled = false;
+    }
+
+    function renderBlockAnalysis(data, block) {
+      const content = document.getElementById('aiContent');
+      const notaColor = data._nota_modulo >= 80 ? '#4E8A50' : data._nota_modulo >= 50 ? '#C9A825' : '#BF5B3D';
+      let html = `<div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;min-height:0">`;
+      html += `
+    <div style="text-align:center;padding:12px;background:#2a2722;border-radius:8px;border:2px solid ${block.accent}44">
+      <div style="font-size:12px;text-transform:uppercase;color:${block.accent};font-weight:700;margin-bottom:8px">${block.icon} ${block.title}</div>
+      <div style="font-size:36px;font-weight:900;color:${notaColor};font-family:'Playfair Display',serif;line-height:1">${data._nota_modulo || '?'}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${notaColor};margin-top:2px">Legitimidade e Coerência</div>
+    </div>
+    <div style="background:#2a2722;border-radius:4px;padding:10px;font-size:12px;color:#ccc5b9;line-height:1.4">
+      ${escapeHtml(data._analise || '')}
+    </div>
+  `;
+      if (data._pontos_atencao && data._pontos_atencao.length) {
+        html += `<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#BF5B3D;margin-bottom:6px">⚠️ Pontos de Atenção</div>`;
+        data._pontos_atencao.forEach(p => {
+          html += `<div style="font-size:12px;color:#ccc5b9;line-height:1.4;background:#2a2722;border-radius:4px;padding:6px 8px;margin-bottom:4px;border-left:3px solid #BF5B3D">${escapeHtml(p)}</div>`;
+        });
+        html += `</div>`;
+      }
+      html += `</div>`;
+      content.innerHTML = html;
+    }
+
+    // ─── Local Storage (persistência) ────────────────────────────
+    function saveLocal() {
+      try {
+        const state = {
+          canvasData,
+          nextId,
+          businessName: document.getElementById('businessName').value,
+          businessPitch: document.getElementById('businessPitch').value
+        };
+        localStorage.setItem('bmc_state', JSON.stringify(state));
+      } catch (e) { }
+    }
+
+    function loadLocal() {
+      try {
+        const saved = localStorage.getItem('bmc_state');
+        if (saved) {
+          const state = JSON.parse(saved);
+          canvasData = state.canvasData || canvasData;
+          nextId = state.nextId || nextId;
+          if (state.businessName) document.getElementById('businessName').value = state.businessName;
+          if (state.businessPitch) document.getElementById('businessPitch').value = state.businessPitch;
+        }
+      } catch (e) { }
+    }
+
+    // ─── API Key Management ──────────────────────────────────────
+    function saveApiKey() {
+      try { localStorage.setItem('bmc_api_key', document.getElementById('apiKey').value); } catch (e) { }
+    }
+    function loadApiKey() {
+      try {
+        const key = localStorage.getItem('bmc_api_key');
+        if (key) document.getElementById('apiKey').value = key;
+      } catch (e) { }
+    }
+    function toggleKeyVisibility() {
+      const input = document.getElementById('apiKey');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    // ─── Init ────────────────────────────────────────────────────
+    document.getElementById('businessName').addEventListener('input', saveLocal);
+    document.getElementById('businessPitch').addEventListener('input', saveLocal);
+    loadLocal();
+    loadApiKey();
+    render();
+  </script>
+</body>
+
+</html>
