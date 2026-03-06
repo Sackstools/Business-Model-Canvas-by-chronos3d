@@ -628,7 +628,7 @@ ${summary}`;
       const currentMode = overrideMode || mode;
       const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
       const isAnalysis = currentMode === "analyze_block";
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + apiKey, {
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + apiKey, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
