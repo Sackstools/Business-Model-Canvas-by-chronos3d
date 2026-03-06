@@ -1195,12 +1195,10 @@ ${summary}`;
 
       const items = canvasData[blockId] || [];
       const name = document.getElementById('businessName').value;
-      const pitch = document.getElementById('businessPitch').value;
 
       const ctx = BLOCKS.map(b => `${b.title}: ${(canvasData[b.id] || []).length > 0 ? (canvasData[b.id] || []).map(i => i.text).join('; ') : '(vazio)'}`).join('\\n');
 
       const prompt = `Você é um especialista em estratégia de negócios. O usuário está preenchendo o bloco "${block.title}" do seu Business Model Canvas${name ? ' para o negócio "' + name + '"' : ''}.
-${pitch ? 'Visão Geral do Projeto (Pitch): "' + pitch + '"\\n' : ''}
 Os itens atuais neste bloco são:
 ${items.length > 0 ? items.map(i => "- " + i.text).join('\\n') : '(vazio)'}
 
@@ -1250,11 +1248,9 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro.`;
       btn.disabled = true;
 
       const name = document.getElementById('businessName').value;
-      const pitch = document.getElementById('businessPitch').value;
       const ctx = BLOCKS.map(b => `${b.title}: ${(canvasData[b.id] || []).length > 0 ? (canvasData[b.id] || []).map(i => i.text).join('; ') : '(vazio)'}`).join('\\n');
 
       const prompt = `Você é um co-fundador visionário e estrategista focado em ideação para um Business Model Canvas${name ? ' para o negócio "' + name + '"' : ''}.
-${pitch ? 'Visão Geral do Projeto (Pitch): "' + pitch + '"\\n' : ''}
 Contexto do canvas atual:
 ${ctx}
 
