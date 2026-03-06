@@ -933,14 +933,13 @@ ${summary}`;
   );
 }
 
-function ExportPanel({ canvasData, businessName, businessPitch }) {
+function ExportPanel({ canvasData, businessName }) {
   const exportJSON = () => {
     const blob = new Blob(
       [
         JSON.stringify(
           {
             nomeNegocio: businessName,
-            pitch: businessPitch,
             criadoEm: new Date().toISOString(),
             canvas: Object.fromEntries(
               CANVAS_BLOCKS.map((b) => [b.id, (canvasData[b.id] || []).map((n) => n.text)])
@@ -962,7 +961,6 @@ function ExportPanel({ canvasData, businessName, businessPitch }) {
 
   const exportMarkdown = () => {
     let md = `# Business Model Canvas${businessName ? `: ${businessName}` : ""}\n`;
-    if (businessPitch) md += `**Pitch / Visão Geral:** ${businessPitch}\n\n`;
     md += `*Gerado em ${new Date().toLocaleDateString("pt-BR")}*\n\n`;
     CANVAS_BLOCKS.forEach((b) => {
       const items = canvasData[b.id] || [];
@@ -983,8 +981,102 @@ function ExportPanel({ canvasData, businessName, businessPitch }) {
     URL.revokeObjectURL(url);
   };
 
+  const exportPDF = async () => {
+    if (!window.jspdf || !window.html2canvas) {
+      alert("Bibliotecas para PDF não estão carregadas.");
+      return;
+    }
+    const { jsPDF } = window.jspdf;
+
+    const aiSidebar = document.getElementById("aiSidebar");
+    const tplButtons = document.querySelectorAll("header div")[0];
+    const headerRight = document.querySelector(".header-right");
+    const businessInput = document.getElementById("businessName");
+
+    const aiSidebarDisplay = aiSidebar?.style.display;
+
+    // Esconder interface
+    if (aiSidebar) aiSidebar.style.display = "none";
+    if (tplButtons) tplButtons.style.display = "none";
+    if (headerRight) headerRight.style.display = "none";
+    document.querySelectorAll(".block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn").forEach((b) => (b.style.display = "none"));
+
+    let titleText = null;
+    if (businessInput) {
+      titleText = document.createElement("h2");
+      titleText.style.color = "#1e1b18";
+      titleText.style.fontFamily = "'DM Sans', sans-serif";
+      titleText.style.fontSize = "20px";
+      titleText.style.fontWeight = "bold";
+      titleText.innerText = businessInput.value || "O Meu Canvas de Negócio";
+      businessInput.parentNode.insertBefore(titleText, businessInput);
+      businessInput.style.display = "none";
+    }
+
+    const header = document.querySelector("header");
+    const h1 = document.querySelector("header h1");
+    const originalBodyBg = document.body.style.background;
+    let originalHeaderBg = "";
+    let originalH1Color = "";
+
+    if (header) {
+      originalHeaderBg = header.style.background;
+      header.style.background = "#f5f0e8";
+    }
+    if (h1) {
+      originalH1Color = h1.style.WebkitTextFillColor || h1.style.color;
+      h1.style.WebkitTextFillColor = "#1e1b18";
+      h1.style.color = "#1e1b18";
+    }
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "visible";
+
+    try {
+      const canvas = await window.html2canvas(document.body, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#f5f0e8",
+        windowWidth: document.body.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("landscape", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const finalWidth = imgWidth * ratio;
+      const finalHeight = imgHeight * ratio;
+      const x = (pdfWidth - finalWidth) / 2;
+      const y = (pdfHeight - finalHeight) / 2;
+
+      pdf.addImage(imgData, "PNG", x, y, finalWidth, finalHeight);
+      pdf.save(`${(businessName || "canvas").replace(/\s+/g, "_")}_BMC.pdf`);
+    } catch (err) {
+      alert("Erro ao extrair PDF: " + err.message);
+    } finally {
+      if (aiSidebar) aiSidebar.style.display = aiSidebarDisplay;
+      if (tplButtons) tplButtons.style.display = "flex";
+      if (headerRight) headerRight.style.display = "flex";
+      document.querySelectorAll(".block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn").forEach((b) => (b.style.display = ""));
+
+      if (titleText) titleText.remove();
+      if (businessInput) businessInput.style.display = "";
+
+      document.body.style.overflow = originalOverflow;
+      if (header) header.style.background = originalHeaderBg;
+      if (h1) {
+        h1.style.WebkitTextFillColor = originalH1Color;
+        h1.style.color = "";
+      }
+    }
+  };
+
   return (
-    <div style={{ display: "flex", gap: "8px" }}>
+    <div className="header-right" style={{ display: "flex", gap: "8px" }}>
       <button
         onClick={exportJSON}
         style={{
@@ -1002,7 +1094,7 @@ function ExportPanel({ canvasData, businessName, businessPitch }) {
         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
       >
-        📄 Exportar JSON
+        📄 JSON
       </button>
       <button
         onClick={exportMarkdown}
@@ -1021,7 +1113,26 @@ function ExportPanel({ canvasData, businessName, businessPitch }) {
         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
       >
-        📝 Exportar Markdown
+        📝 MD
+      </button>
+      <button
+        onClick={exportPDF}
+        style={{
+          background: "#bf5b3d",
+          color: "#fff",
+          border: "1px solid #d96846",
+          borderRadius: "6px",
+          padding: "6px 14px",
+          cursor: "pointer",
+          fontSize: "12px",
+          fontWeight: 600,
+          fontFamily: "'DM Sans', sans-serif",
+          transition: "all 0.2s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#e57f5c")}
+        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#d96846")}
+      >
+        ⬇️ PDF
       </button>
     </div>
   );
@@ -1351,7 +1462,7 @@ export default function BusinessModelCanvas() {
           <span style={{ color: "#8a8278", fontSize: "12px" }}>
             {totalItems} {totalItems === 1 ? "item" : "itens"}
           </span>
-          <ExportPanel canvasData={canvasData} businessName={businessName} businessPitch={businessPitch} />
+          <ExportPanel canvasData={canvasData} businessName={businessName} />
           <button
             onClick={() => setShowAI((p) => !p)}
             style={{

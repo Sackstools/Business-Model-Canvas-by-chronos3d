@@ -8,6 +8,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Caveat:wght@400;600&family=Playfair+Display:wght@700;900&display=swap"
     rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -567,8 +569,10 @@
     </div>
     <div class="header-right">
       <span class="item-count" id="itemCount">0 itens</span>
-      <button class="export-btn" onclick="exportJSON()">📄 Exportar JSON</button>
-      <button class="export-btn" onclick="exportMarkdown()">📝 Exportar Markdown</button>
+      <button class="export-btn" onclick="exportJSON()">📄 JSON</button>
+      <button class="export-btn" onclick="exportMarkdown()">📝 MD</button>
+      <button class="export-btn" onclick="exportPDF()" style="background:#bf5b3d; border-color:#d96846; color:#fff">⬇️
+        PDF</button>
       <button class="ai-toggle" id="aiToggle" onclick="toggleAI()"
         style="background:linear-gradient(135deg,#D4915E 0%,#9673B9 100%)">🧠 IA</button>
     </div>
@@ -847,10 +851,8 @@
     // ─── Export ──────────────────────────────────────────────────
     function exportJSON() {
       const name = document.getElementById('businessName').value;
-      const pitch = document.getElementById('businessPitch').value;
       const obj = {
         nomeNegocio: name,
-        pitch: pitch,
         criadoEm: new Date().toISOString(),
         canvas: {}
       };
@@ -861,9 +863,7 @@
 
     function exportMarkdown() {
       const name = document.getElementById('businessName').value;
-      const pitch = document.getElementById('businessPitch').value;
       let md = `# Business Model Canvas${name ? ': ' + name : ''}\n`;
-      if (pitch) md += `**Pitch / Visão Geral:** ${pitch}\n\n`;
       md += `*Gerado em ${new Date().toLocaleDateString('pt-BR')}*\n\n`;
       BLOCKS.forEach(b => {
         const items = canvasData[b.id] || [];
@@ -874,6 +874,93 @@
       });
       const blob = new Blob([md], { type: 'text/markdown' });
       downloadBlob(blob, `${(name || 'canvas').replace(/\s+/g, '_')}_BMC.md`);
+    }
+
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+
+      const grid = document.getElementById('canvasGrid');
+      const aiSidebar = document.getElementById('aiSidebar');
+      const aiSidebarDisplay = aiSidebar.style.display;
+      const tplButtons = document.querySelectorAll('header div')[0];
+      const headerRight = document.querySelector('.header-right');
+      const businessInput = document.getElementById('businessName');
+
+      // Preparação do UI: esconder IA, esconder menus
+      aiSidebar.style.display = 'none';
+      tplButtons.style.display = 'none';
+      headerRight.style.display = 'none';
+      document.querySelectorAll('.block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn').forEach(b => b.style.display = 'none');
+
+      // Trocar Input por Texto fixo para ficar bonito no PDF
+      const titleText = document.createElement('h2');
+      titleText.style.color = '#1e1b18';
+      titleText.style.fontFamily = "'DM Sans', sans-serif";
+      titleText.style.fontSize = '20px';
+      titleText.style.fontWeight = 'bold';
+      titleText.innerText = businessInput.value || 'O Meu Canvas de Negócio';
+      businessInput.parentNode.insertBefore(titleText, businessInput);
+      businessInput.style.display = 'none';
+
+      // Temporariamente reescrever cores do header para exportação limpa
+      const originalHeaderBg = document.querySelector('header').style.background;
+      const originalH1Color = document.querySelector('header h1').style.webkitTextFillColor;
+
+      document.querySelector('header').style.background = '#f5f0e8';
+      document.querySelector('header h1').style.webkitTextFillColor = '#1e1b18';
+      document.querySelector('header h1').style.color = '#1e1b18';
+
+      // Ajuste para evitar barras de scroll
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'visible';
+
+      try {
+        const canvas = await html2canvas(document.body, {
+          scale: 2, // Maior resolução para impressão
+          useCORS: true,
+          backgroundColor: '#f5f0e8',
+          windowWidth: document.body.scrollWidth,
+          windowHeight: document.documentElement.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        // Criar PDF (Paisagem/Landscape, A4)
+        const pdf = new jsPDF('landscape', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+
+        // Ajustar a imagem para caber no PDF sem distorcer
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const finalWidth = imgWidth * ratio;
+        const finalHeight = imgHeight * ratio;
+
+        // Centralizar
+        const x = (pdfWidth - finalWidth) / 2;
+        const y = (pdfHeight - finalHeight) / 2;
+
+        pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
+        pdf.save(`${(businessInput.value || 'canvas').replace(/\s+/g, '_')}_BMC.pdf`);
+
+      } catch (err) {
+        alert("Erro ao extrair PDF: " + err.message);
+      } finally {
+        // Restaurar estado do UI
+        aiSidebar.style.display = aiSidebarDisplay;
+        tplButtons.style.display = 'flex';
+        headerRight.style.display = 'flex';
+        document.querySelectorAll('.block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn').forEach(b => b.style.display = '');
+
+        titleText.remove();
+        businessInput.style.display = '';
+
+        document.body.style.overflow = originalOverflow;
+        document.querySelector('header').style.background = originalHeaderBg;
+        document.querySelector('header h1').style.webkitTextFillColor = originalH1Color;
+        document.querySelector('header h1').style.color = '';
+      }
     }
 
     function downloadBlob(blob, filename) {
