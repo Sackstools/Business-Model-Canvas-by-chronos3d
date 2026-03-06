@@ -964,7 +964,7 @@ ${summary}`;
           btn.disabled = false;
           return;
         }
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1135,7 +1135,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro.`;
           throw new Error("Insira sua chave Gemini no campo acima.");
         }
 
-        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=' + apiKey, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1186,7 +1186,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
         const apiKey = document.getElementById('apiKey').value.trim();
         if (!apiKey) throw new Error("Insira sua chave Gemini no campo acima.");
 
-        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=' + apiKey, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
