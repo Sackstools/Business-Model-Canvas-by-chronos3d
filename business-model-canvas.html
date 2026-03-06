@@ -1236,8 +1236,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
         const state = {
           canvasData,
           nextId,
-          businessName: document.getElementById('businessName').value,
-          businessPitch: document.getElementById('businessPitch').value
+          businessName: document.getElementById('businessName').value
         };
         localStorage.setItem('bmc_state', JSON.stringify(state));
       } catch (e) { }
@@ -1251,7 +1250,6 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
           canvasData = state.canvasData || canvasData;
           nextId = state.nextId || nextId;
           if (state.businessName) document.getElementById('businessName').value = state.businessName;
-          if (state.businessPitch) document.getElementById('businessPitch').value = state.businessPitch;
         }
       } catch (e) { }
     }
@@ -1273,7 +1271,6 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
 
     // ─── Init ────────────────────────────────────────────────────
     document.getElementById('businessName').addEventListener('input', saveLocal);
-    document.getElementById('businessPitch').addEventListener('input', saveLocal);
     loadLocal();
     loadApiKey();
     render();
