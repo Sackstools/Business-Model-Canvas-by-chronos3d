@@ -637,7 +637,7 @@ ${summary}`;
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: generatePrompt(overrideTarget, overrideMode) }],
-          temperature: 0.7,
+          temperature: 0.0,
           max_tokens: 4000,
           response_format: { type: "json_object" }
         }),
