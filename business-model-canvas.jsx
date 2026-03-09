@@ -780,21 +780,40 @@ Retorne APENAS um objeto JSON. A chave do JSON deve ser exatamente "solucao" e o
       const solText = parsed.solucao || "Nenhuma sugestão encontrada. Reveja o bloco manualmente.";
       const safeText = solText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
       
-      btn.innerHTML = `💡 Ver Solução <div class="sol-tooltip" style="display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);width:250px;background:#1e1b18;border:1px solid #0d47a1;padding:12px;border-radius:6px;color:#e8e0d4;box-shadow:0 8px 16px rgba(0,0,0,0.8);z-index:99999;font-weight:normal;text-align:left;white-space:normal;line-height:1.4;pointer-events:none;font-size:11px;">${safeText}</div>`;
+      btn.innerHTML = `💡 Ver Solução`;
+      btn.dataset.solucao = safeText;
       btn.style.background = "#0d47a133";
       btn.style.borderColor = "#0d47a1";
       btn.style.color = "#82b1ff";
-      btn.style.overflow = "visible";
       btn.disabled = false;
       btn.onclick = null;
+      
       btn.onmouseover = (e) => {
         e.currentTarget.style.background = '#0d47a155';
-        const tt = e.currentTarget.querySelector('.sol-tooltip');
-        if (tt) tt.style.display = 'block';
+        let tt = document.getElementById('global-sol-tooltip');
+        if (!tt) {
+          tt = document.createElement('div');
+          tt.id = 'global-sol-tooltip';
+          tt.style.cssText = 'position:fixed;background:#1e1b18;border:1px solid #0d47a1;padding:12px;border-radius:6px;color:#e8e0d4;box-shadow:0 8px 16px rgba(0,0,0,0.8);z-index:999999;font-weight:normal;text-align:left;white-space:normal;line-height:1.4;pointer-events:none;font-size:13px;width:280px;';
+          document.body.appendChild(tt);
+        }
+        tt.innerHTML = e.currentTarget.dataset.solucao;
+        tt.style.display = 'block';
+        
+        const rect = e.currentTarget.getBoundingClientRect();
+        let topPos = rect.top - tt.offsetHeight - 10;
+        if (topPos < 10) topPos = rect.bottom + 10; 
+        
+        tt.style.top = topPos + 'px';
+        
+        let leftPos = rect.left - 290;
+        if (leftPos < 10) leftPos = rect.left + rect.width / 2 - 140; 
+        
+        tt.style.left = leftPos + 'px';
       };
       btn.onmouseout = (e) => {
         e.currentTarget.style.background = '#0d47a133';
-        const tt = e.currentTarget.querySelector('.sol-tooltip');
+        const tt = document.getElementById('global-sol-tooltip');
         if (tt) tt.style.display = 'none';
       };
     } catch (err) {
