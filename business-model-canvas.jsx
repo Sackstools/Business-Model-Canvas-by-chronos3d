@@ -730,17 +730,22 @@ ${summary}`;
       const currentStatusJson = JSON.stringify(currentStatus, null, 2);
 
       const bName = businessName || 'Negócio Corporativo';
-      const prompt = `Você é um Consultor Estratégico especialista e está a avaliar um Business Model Canvas focado na empresa/projeto "${bName}". O validador detetou a seguinte gravidade/problema:
+      const prompt = `Você é um Auditor e Corretor de Estratégias B2B para a empresa/projeto "${bName}".
+Um erro de validação foi encontrado no Canvas:
 ---
-Problema: ${prob.descricao}
+Problema Detetado: ${prob.descricao}
 ---
-Os blocos que geraram este problema encontram-se no seguinte estado atual e necessitam de reestruturação urgente:
+Os blocos afetados estão no seguinte estado atual (array de strings):
 ${currentStatusJson}
 
-A sua tarefa é RESOLVER ESTA GRAVIDADE EXECUTANDO MUTAÇÕES DIRETAS (Alterar, Apagar e Substituir) nos itens atuais.
-REGRA CRÍTICA: NÃO se limite a apenas criar e adicionar novos itens no final. Você DEVE obrigatoriamente REESCREVER e MELHORAR os itens problemáticos que já existem no estado atual, ou APAGÁ-LOS se causarem contradições insuperáveis.
-MUITO IMPORTANTE: Mantenha sempre um tom de voz rigoroso, técnico, que combine perfeitamente com a indústria do negócio (${bName}), seja direto e sem adjetivos vazios.
-Retorne APENAS um objeto JSON válido (cujas chaves são as IDs exatas dos blocos fornecidos). Cada chave deve conter a lista FINAL e COMPLETA dos itens (strings) que vão ficar no canvas, substituindo integralmente o que lá estava. NADA DE TEXTO ADICIONAL FORA DO JSON.`;
+A SUA TAREFA É DESTRUIR O ERRO E REESCREVER TOTALMENTE OS BLOCOS AFETADOS.
+Passo 1: Encontre a exata frase/item no "estado atual" que comete o erro descrito. 
+Passo 2: Essa frase DEVE desaparecer! Apague-a ou reescreva-a totalmente de forma a sanar a falha.
+Passo 3: Mantenha intactos os restantes itens que forem válidos e que não têm culpa do erro.
+Passo 4: NÃO se limite a apenas ditar um novo post-it no final da lista deixando o item original problemático para trás. É imperativo EXCLUIR ou MUTAR a raiz do problema.
+
+Mantenha um tom técnico, industrial e sério (${bName}).
+Retorne APENAS um objeto JSON. As chaves devem ser exatas IDs fornecidas acima. O Array atribuído a cada chave representará o CONJUNTO FINAL e COMPLETO de post-its que o utilizador verá no ecrã (os bons itens que foram mantidos + os itens problemáticos que você corrigiu). NADA DE TEXTO ADICIONAL FORA DO JSON.`;
 
       const resp = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
