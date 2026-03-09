@@ -117,7 +117,7 @@ function NoteCard({ note, onDelete, onEdit, accent }) {
         transition: "all 0.2s ease",
         position: "relative",
         fontFamily: "'Caveat', cursive",
-        fontSize: "15px",
+        fontSize: "17px",
         lineHeight: "1.35",
         color: "#3a3228",
       }}
@@ -142,7 +142,7 @@ function NoteCard({ note, onDelete, onEdit, accent }) {
             border: "none",
             background: "transparent",
             fontFamily: "'Caveat', cursive",
-            fontSize: "15px",
+            fontSize: "17px",
             resize: "none",
             outline: "none",
             color: "#3a3228",
@@ -163,18 +163,31 @@ function NoteCard({ note, onDelete, onEdit, accent }) {
         style={{
           position: "absolute",
           top: "2px",
-          right: "4px",
-          background: "none",
+          right: "2px",
+          background: "rgba(255, 255, 255, 0.4)",
+          borderRadius: "50%",
+          width: "22px",
+          height: "22px",
           border: "none",
           cursor: "pointer",
-          fontSize: "12px",
-          opacity: 0.4,
-          color: "#666",
-          padding: "2px 4px",
+          fontSize: "14px",
+          color: "#999",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           lineHeight: 1,
+          transition: "all 0.2s ease",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-        onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.4)}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#ffebeb";
+          e.currentTarget.style.color = "#e53e3e";
+          e.currentTarget.style.transform = "scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(255, 255, 255, 0.4)";
+          e.currentTarget.style.color = "#999";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
         title="Remover"
       >
         ✕

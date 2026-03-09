@@ -345,7 +345,7 @@
       transition: all 0.2s ease;
       position: relative;
       font-family: 'Caveat', cursive;
-      font-size: 15px;
+      font-size: 17px;
       line-height: 1.35;
       color: #3a3228;
       cursor: text;
@@ -360,19 +360,26 @@
     .note-card .delete-btn {
       position: absolute;
       top: 2px;
-      right: 4px;
-      background: none;
+      right: 2px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
       border: none;
       cursor: pointer;
-      font-size: 12px;
-      opacity: 0.4;
-      color: #666;
-      padding: 2px 4px;
+      font-size: 14px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       line-height: 1;
+      transition: all 0.2s ease;
     }
 
     .note-card .delete-btn:hover {
-      opacity: 1;
+      background: #ffebeb;
+      color: #e53e3e;
+      transform: scale(1.1);
     }
 
     .note-card textarea {
@@ -380,7 +387,7 @@
       border: none;
       background: transparent;
       font-family: 'Caveat', cursive;
-      font-size: 15px;
+      font-size: 17px;
       resize: none;
       outline: none;
       color: #3a3228;
