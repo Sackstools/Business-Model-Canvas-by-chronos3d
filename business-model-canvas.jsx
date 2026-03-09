@@ -634,6 +634,19 @@ Canvas Atual:
 ${summary}`;
   };
 
+  const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
+    for (let i = 0; i < retries; i++) {
+      const resp = await fetch(url, options);
+      if (resp.status === 429 && i < retries - 1) {
+        // Log para consola apenas para acompanhamento técnico invisível
+        console.warn(`429 Rate Limit. Tentativa automática ${i + 1}/${retries} em ${delay}ms...`);
+        await new Promise((r) => setTimeout(r, delay * (i + 1)));
+        continue;
+      }
+      return resp;
+    }
+  };
+
   const runAI = async (overrideTarget = null, overrideMode = null) => {
     setLoading(true);
     setError(null);
@@ -642,7 +655,7 @@ ${summary}`;
       const currentMode = overrideMode || mode;
       const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
       const isAnalysis = currentMode === "analyze_block";
-      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { 
            "Content-Type": "application/json",
@@ -716,18 +729,19 @@ ${summary}`;
       });
       const currentStatusJson = JSON.stringify(currentStatus, null, 2);
 
-      const prompt = `Você é um Consultor Estratégico B2B e Industrial. O utilizador elaborou um Business Model Canvas e o validador detetou a seguinte gravidade/problema:
+      const bName = businessName || 'Negócio Corporativo';
+      const prompt = `Você é um Consultor Estratégico especialista e está a avaliar um Business Model Canvas focado na empresa/projeto "${bName}". O validador detetou a seguinte gravidade/problema:
 ---
 Problema: ${prob.descricao}
 ---
 Os blocos que podem ter gerado este problema encontram-se no seguinte estado atual e necessitam de reestruturação:
 ${currentStatusJson}
 
-A sua tarefa é RESOLVER ESTA GRAVIDADE alterando, apagando ou adicionando itens cirurgicamente a estes blocos.
-MUITO IMPORTANTE: Mantenha sempre o tom rigoroso, B2B, industrial, direto e sem adjetivos vazios.
+A sua tarefa é RESOLVER ESTA GRAVIDADE alterando, apagando ou adicionando itens cirurgicamente a estes blocos para que o modelo fique perfeitamente alinhado com a área de atuação de "${bName}".
+MUITO IMPORTANTE: Mantenha sempre um tom de voz rigoroso, técnico, que combine perfeitamente com a indústria do negócio (${bName}), seja direto e sem adjetivos vazios.
 Retorne APENAS um objeto JSON válido (cujas chaves são as IDs exatas dos blocos fornecidos). Cada chave deve conter um array final rigoroso de strings. Estes serão os itens finais que vão substituir inteiramente os blocos para erradicar a gravidade. Adicione ou exclua peças onde necessário para sanar a falha! NADA DE TEXTO ADICIONAL FORA DO JSON.`;
 
-      const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const resp = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
