@@ -1002,7 +1002,7 @@
       }).join('\n');
 
       const instructions = {
-        fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos com conteúdo, sugira 1 item complementar. Retorne JSON onde chaves são IDs dos blocos e valores são arrays de strings em português. IDs: ${BLOCKS.map(b => b.id).join(', ')}.`,
+        fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos com conteúdo, sugira 1 item complementar. REGRA CRÍTICA: As sugestões devem ser EXTREMAMENTE OBJETIVAS, maduras e alinhadas ao mundo corporativo B2B ou Indústria Avançada (ex: Deep-Tech, Manufatura Aditiva). Evite jargões emocionais. Use vocabulário técnico e estratégico focado em otimização de custos e operações. Retorne JSON onde chaves são IDs dos blocos e valores são arrays de strings em português. IDs: ${BLOCKS.map(b => b.id).join(', ')}.`,
         validate: `Você é um auditor rigoroso de Business Model Canvas. Analise a COERÊNCIA INTERNA entre todos os blocos e identifique problemas. Verifique:
 1. INCOERÊNCIAS: A proposta de valor realmente atende os segmentos? Os canais são adequados para esses segmentos? As fontes de receita são compatíveis com a proposta de valor? Os recursos e atividades sustentam a proposta? A estrutura de custos reflete as atividades e recursos?
 2. ITENS VAGOS: Itens genéricos demais que precisam ser mais específicos
@@ -1311,7 +1311,8 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUN
 Contexto do canvas atual:
 ${ctx}
 
-Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}". Não repita exatamente o que já está lá. Sugira 3 a 5 itens práticos e aplicáveis ao modelo de negócio.
+Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}". Não repita exatamente o que já está lá. Sugira 3 a 5 itens práticos e aplicáveis ao modelo de negócio. 
+REGRA CRÍTICA DE TOM DE VOZ: Suas respostas devem ser 100% OBJETIVAS, utilizando jargão estratégico de alta gestão B2B, indústria avançada e hardware corporativo (Deep Tech, Manufatura, B2B Enterprise). Evite preenchimento emocional genérico. Vá direto à estrutura de custos, processos chave, SLAs, ou propriedade intelectual.
 Retorne um JSON com esta estrutura:
 {
   "${block.id}": [

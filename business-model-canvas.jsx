@@ -594,7 +594,8 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUN
 Contexto do canvas atual:
 ${summary}
 
-Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}". Não repita exatamente o que já está lá. Sugira 3 a 5 itens práticos e aplicáveis ao modelo de negócio.
+Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}". Não repita exatamente o que já está lá. Sugira 3 a 5 itens práticos e aplicáveis ao modelo.
+REGRA CRÍTICA DE TOM DE VOZ: Suas respostas devem ser 100% OBJETIVAS, utilizando jargão estratégico de alta gestão B2B, indústria avançada e hardware corporativo (Deep Tech, Manufatura). Vá direto "à dor" nas operações, SLAs, patentes ou custos. Evite adjetivos emocionais vazios.
 Retorne um JSON com esta estrutura:
 {
   "${block.id}": [
@@ -607,7 +608,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
     }
 
     const modeInstructions = {
-      fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar adicional. Retorne suas sugestões como um objeto JSON onde as chaves são IDs dos blocos e os valores são arrays de strings de sugestões em português. IDs dos blocos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}. Inclua apenas blocos onde tenha sugestões.`,
+      fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar. REGRA CRÍTICA: As sugestões devem ser EXTREMAMENTE OBJETIVAS, maduras e alinhadas ao mundo corporativo B2B ou Indústria Avançada (ex: Deep-Tech, Hardware). Evite jargões emocionais. Use vocabulário técnico focado em otimização de custos e operações industriais. Retorne um objeto JSON onde as chaves são IDs dos blocos e os valores arrays de strings. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
       validate: `Você é um auditor rigoroso de Business Model Canvas. Analise a COERÊNCIA INTERNA entre todos os blocos. Verifique: 1)INCOERÊNCIAS entre proposta de valor e segmentos, canais inadequados, receitas incompatíveis; 2)ITENS VAGOS genéricos demais; 3)CONTRADIÇÕES entre blocos; 4)LACUNAS LÓGICAS; 5)DUPLICATAS. REGRA CRÍTICA: Se o Canvas for altamente técnico, coeso e sem falhas graves, VOCÊ DEVE DAR NOTA 100 e retornar a lista de problemas vazia, não invente falsas inconsistências. Retorne JSON: {"_nota":0-100,"_resumo":"diagnóstico","_problemas":[{"tipo":"INCOERÊNCIA|VAGO|CONTRADIÇÃO|LACUNA|DUPLICATA","gravidade":"alta|media|baixa","blocos":["id1","id2"],"descricao":"explicação"}],"_pontos_fortes":["ponto1"]}. IDs: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
     };
 
