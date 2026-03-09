@@ -544,7 +544,7 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
   );
 }
 
-function AISidebar({ canvasData, onApplySuggestions, businessName, businessPitch, analyzeTarget, onClearAnalyzeTarget, brainstormTarget, onClearBrainstormTarget }) {
+function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, businessPitch, analyzeTarget, onClearAnalyzeTarget, brainstormTarget, onClearBrainstormTarget }) {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
@@ -697,6 +697,86 @@ ${summary}`;
     if (onClearBrainstormTarget) onClearBrainstormTarget();
   };
 
+  const fixValidationProblem = async (btn, b64Prob, probObj) => {
+    if (!apiKey) {
+      alert("Por favor, insira a sua chave Groq Llama 3 para usar a resolução automática.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ A Solucionar...";
+
+    try {
+      const prob = probObj || JSON.parse(decodeURIComponent(atob(b64Prob)));
+      const affectedBlocks = (prob.blocos && prob.blocos.length) ? prob.blocos : CANVAS_BLOCKS.map(b => b.id);
+      
+      const currentStatus = {};
+      affectedBlocks.forEach(bId => {
+        currentStatus[bId] = (canvasData[bId] || []).map(i => i.text);
+      });
+      const currentStatusJson = JSON.stringify(currentStatus, null, 2);
+
+      const prompt = `Você é um Consultor Estratégico B2B e Industrial. O utilizador elaborou um Business Model Canvas e o validador detetou a seguinte gravidade/problema:
+---
+Problema: ${prob.descricao}
+---
+Os blocos que podem ter gerado este problema encontram-se no seguinte estado atual e necessitam de reestruturação:
+${currentStatusJson}
+
+A sua tarefa é RESOLVER ESTA GRAVIDADE alterando, apagando ou adicionando itens cirurgicamente a estes blocos.
+MUITO IMPORTANTE: Mantenha sempre o tom rigoroso, B2B, industrial, direto e sem adjetivos vazios.
+Retorne APENAS um objeto JSON válido (cujas chaves são as IDs exatas dos blocos fornecidos). Cada chave deve conter um array final rigoroso de strings. Estes serão os itens finais que vão substituir inteiramente os blocos para erradicar a gravidade. Adicione ou exclua peças onde necessário para sanar a falha! NADA DE TEXTO ADICIONAL FORA DO JSON.`;
+
+      const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.1,
+          max_tokens: 3000,
+          response_format: { type: "json_object" },
+        }),
+      });
+
+      if (!resp.ok) throw new Error("Falha ao comunicar com a Groq API.");
+
+      const data = await resp.json();
+      const text = data.choices[0].message.content || "{}";
+      
+      const primeiraChaveta = text.indexOf('{');
+      const ultimaChaveta = text.lastIndexOf('}');
+      let jsonSeguro = text;
+      if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+        jsonSeguro = text.substring(primeiraChaveta, ultimaChaveta + 1);
+      }
+      jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+      
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonSeguro);
+      } catch(e) {
+        parsed = JSON.parse(jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2"));
+      }
+
+      if (onAutoFix) {
+        onAutoFix(parsed);
+      }
+
+      btn.textContent = "✅ Corrigido!";
+      btn.style.background = "#4E8A5033";
+      btn.style.color = "#4E8A50";
+      btn.style.borderColor = "#4E8A50";
+    } catch (err) {
+      console.error(err);
+      btn.textContent = "⚠️ Erro (" + err.message + ")";
+      btn.disabled = false;
+    }
+  };
+
   return (
     <div
       style={{
@@ -831,11 +911,23 @@ ${summary}`;
                 <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: gravColor, marginBottom: "6px" }}>{gravIcon} Gravidade {gravLabel} ({probs.length})</div>
                 {probs.map((prob, i) => {
                   const blocoNames = (prob.blocos || []).map(id => { const bl = CANVAS_BLOCKS.find(b => b.id === id); return bl ? bl.icon + " " + bl.title : id; }).join(" ↔ ");
+                  const b64Prob = btoa(encodeURIComponent(JSON.stringify(prob)));
                   return (
                     <div key={i} style={{ background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: `3px solid ${gravColor}` }}>
                       <div style={{ fontSize: "10px", color: gravColor, fontWeight: 700, letterSpacing: "0.05em", marginBottom: "3px" }}>⚠️ {prob.tipo}</div>
                       <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4 }}>{prob.descricao}</div>
-                      {blocoNames && <div style={{ fontSize: "10px", color: "#8a8278", marginTop: "4px" }}>📍 {blocoNames}</div>}
+                      {blocoNames && <div style={{ fontSize: "10px", color: "#8a8278", marginTop: "4px", marginBottom: "6px" }}>📍 {blocoNames}</div>}
+                      <button
+                        onClick={(e) => {
+                          const btn = e.currentTarget;
+                          fixValidationProblem(btn, b64Prob, prob);
+                        }}
+                        style={{ background: `${gravColor}22`, color: gravColor, border: `1px solid ${gravColor}66`, borderRadius: "4px", fontSize: "10px", padding: "4px 8px", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", display: "block", width: "100%" }}
+                        onMouseOver={(e) => e.currentTarget.style.background = `${gravColor}44`}
+                        onMouseOut={(e) => e.currentTarget.style.background = `${gravColor}22`}
+                      >
+                        🛠️ Solucionar Automaticamente
+                      </button>
                     </div>
                   );
                 })}
@@ -1390,6 +1482,22 @@ export default function BusinessModelCanvas() {
     addNote(blockId, cleaned, "#ffffff");
   };
 
+  const handleAutoFix = (updates) => {
+    setCanvasData((prev) => {
+      const next = { ...prev };
+      Object.entries(updates).forEach(([bId, newItems]) => {
+        if (Array.isArray(newItems) && next[bId] !== undefined) {
+          next[bId] = newItems.map((txt, idx) => ({
+            id: Date.now() + idx + Math.random(),
+            text: txt.replace(/^(⚠️|🔄|✨|✅|💡)\s*/, ""),
+            color: "#ffffff",
+          }));
+        }
+      });
+      return next;
+    });
+  };
+
   const loadTemplate = (key) => {
     const tpl = TEMPLATES[key];
     if (tpl) {
@@ -1595,7 +1703,7 @@ export default function BusinessModelCanvas() {
 
         {showAI && (
           <div style={{ width: "195px", flexShrink: 0 }}>
-            <AISidebar canvasData={canvasData} onApplySuggestions={applySuggestion} businessName={businessName} businessPitch={businessPitch} analyzeTarget={analyzeTarget} onClearAnalyzeTarget={() => setAnalyzeTarget(null)} brainstormTarget={brainstormTarget} onClearBrainstormTarget={() => setBrainstormTarget(null)} />
+            <AISidebar canvasData={canvasData} onApplySuggestions={applySuggestion} onAutoFix={handleAutoFix} businessName={businessName} businessPitch={businessPitch} analyzeTarget={analyzeTarget} onClearAnalyzeTarget={() => setAnalyzeTarget(null)} brainstormTarget={brainstormTarget} onClearBrainstormTarget={() => setBrainstormTarget(null)} />
           </div>
         )}
       </div>

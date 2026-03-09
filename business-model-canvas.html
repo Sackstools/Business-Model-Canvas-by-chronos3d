@@ -1218,11 +1218,13 @@ ${summary}`;
               return bl ? bl.icon + ' ' + bl.title : id;
             }).join(' ↔ ');
             const tipoIcon = tipoIcons[prob.tipo] || '⚠️';
+            const b64Prob = btoa(encodeURIComponent(JSON.stringify(prob)));
             html += `
           <div style="background:#2a2722;border-radius:4px;padding:8px;margin-bottom:6px;border-left:3px solid ${gravColors[grav]}">
             <div style="font-size:10px;color:${gravColors[grav]};font-weight:700;letter-spacing:0.05em;margin-bottom:3px">${tipoIcon} ${escapeHtml(prob.tipo || 'PROBLEMA')}</div>
             <div style="font-size:12px;color:#ccc5b9;line-height:1.4">${escapeHtml(prob.descricao || '')}</div>
-            ${blocoNames ? `<div style="font-size:10px;color:#8a8278;margin-top:4px">📍 ${blocoNames}</div>` : ''}
+            ${blocoNames ? `<div style="font-size:10px;color:#8a8278;margin-top:4px;margin-bottom:6px">📍 ${blocoNames}</div>` : ''}
+            <button onclick="fixValidationProblem(this, '${b64Prob}')" style="background:${gravColors[grav]}22;color:${gravColors[grav]};border:1px solid ${gravColors[grav]}66;border-radius:4px;font-size:10px;padding:4px 8px;cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:block;width:100%" onmouseover="this.style.background='${gravColors[grav]}44'" onmouseout="this.style.background='${gravColors[grav]}22'">🛠️ Solucionar Automaticamente</button>
           </div>
         `;
           });
@@ -1415,6 +1417,103 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
       }
       html += `</div>`;
       content.innerHTML = html;
+    }
+
+    // ─── AI Auto-Fix ─────────────────────────────────────────────
+    async function fixValidationProblem(btn, b64Prob) {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      if (!apiKey) return alert("Por favor, insira a sua chave Groq Llama 3 para usar a resolução automática.");
+
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = "⏳ A Solucionar...";
+
+      try {
+        const prob = JSON.parse(decodeURIComponent(atob(b64Prob)));
+        const affectedBlocks = (prob.blocos && prob.blocos.length) ? prob.blocos : BLOCKS.map(b => b.id);
+        
+        const currentStatus = {};
+        affectedBlocks.forEach(bId => {
+          currentStatus[bId] = (canvasData[bId] || []).map(i => i.text);
+        });
+        const currentStatusJson = JSON.stringify(currentStatus, null, 2);
+
+        const prompt = `Você é um Consultor Estratégico B2B e Industrial. O utilizador elaborou um Business Model Canvas e o validador detetou a seguinte gravidade/problema:
+---
+Problema: ${prob.descricao}
+---
+Os blocos que podem ter gerado este problema encontram-se no seguinte estado atual e necessitam de reestruturação:
+${currentStatusJson}
+
+A sua tarefa é RESOLVER ESTA GRAVIDADE alterando, apagando ou adicionando itens cirurgicamente a estes blocos.
+MUITO IMPORTANTE: Mantenha sempre o tom rigoroso, B2B, industrial, direto e sem adjetivos vazios.
+Retorne APENAS um objeto JSON válido (cujas chaves são as IDs exatas dos blocos fornecidos). Cada chave deve conter um array final rigoroso de strings. Estes serão os itens finais que vão substituir inteiramente os blocos para erradicar a gravidade. Adicione ou exclua peças onde necessário para sanar a falha! NADA DE TEXTO ADICIONAL FORA DO JSON.`;
+
+        const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-8b-instant',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.1,
+            max_tokens: 3000,
+            response_format: { type: 'json_object' }
+          })
+        });
+
+        if (!resp.ok) throw new Error("Falha ao comunicar com a Groq API.");
+
+        const data = await resp.json();
+        const text = data.choices[0].message.content || '{}';
+        
+        const primeiraChaveta = text.indexOf('{');
+        const ultimaChaveta = text.lastIndexOf('}');
+        let jsonSeguro = text;
+        if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+          jsonSeguro = text.substring(primeiraChaveta, ultimaChaveta + 1);
+        }
+        jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+        
+        let parsed;
+        try {
+          parsed = JSON.parse(jsonSeguro);
+        } catch(e) {
+          parsed = JSON.parse(jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2"));
+        }
+
+        let changesMade = 0;
+        Object.entries(parsed).forEach(([bId, newItems]) => {
+          if (Array.isArray(newItems) && canvasData[bId] !== undefined) {
+             const baseColor = window.selectedColors ? (window.selectedColors[bId] || '#ffffff') : '#ffffff';
+             canvasData[bId] = newItems.map(txt => ({
+               id: nextId++,
+               text: txt.replace(/^(⚠️|🔄|✨|✅|💡)\s*/, ''),
+               color: baseColor
+             }));
+             changesMade++;
+          }
+        });
+
+        if (changesMade > 0) {
+          render();
+          saveLocal();
+          btn.textContent = "✅ Problema Corrigido!";
+          btn.style.background = "#4E8A5033";
+          btn.style.color = "#4E8A50";
+          btn.style.borderColor = "#4E8A50";
+        } else {
+          btn.textContent = "🤔 Nenhuma alteração.";
+          btn.disabled = false;
+        }
+
+      } catch (err) {
+        console.error(err);
+        btn.textContent = "⚠️ Erro (" + escapeHtml(err.message) + ")";
+        btn.disabled = false;
+      }
     }
 
     // ─── Local Storage (persistência) ────────────────────────────
