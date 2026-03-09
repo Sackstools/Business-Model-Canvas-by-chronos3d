@@ -1150,7 +1150,7 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
       >
-        💾 Salvar
+        💾
       </button>
 
       <label
@@ -1172,7 +1172,7 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
       >
-        <span>📂 Carregar</span>
+        <span>📂</span>
         <input type="file" accept=".json" style={{ display: "none" }} onChange={handleImportJSON} />
       </label>
       <button

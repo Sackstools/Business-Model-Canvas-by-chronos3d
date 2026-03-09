@@ -569,12 +569,12 @@
     </div>
     <div class="header-right">
       <span class="item-count" id="itemCount">0 itens</span>
-      <button class="export-btn" onclick="exportJSON()" title="Salvar ficheiro no seu Computador">💾 Salvar</button>
-      <button class="export-btn" onclick="document.getElementById('importFile').click()" title="Carregar ficheiro do Computador">📂 Carregar</button>
+      <button class="export-btn" onclick="exportJSON()" title="Salvar ficheiro no seu Computador">💾</button>
+      <button class="export-btn" onclick="document.getElementById('importFile').click()"
+        title="Carregar ficheiro do Computador">📂</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
       <button class="export-btn" onclick="exportMarkdown()">📝 MD</button>
-      <button class="export-btn" onclick="exportPDF()" style="background:#bf5b3d; border-color:#d96846; color:#fff">⬇️
-        PDF</button>
+      <button class="export-btn" onclick="exportPDF()" style="background:#bf5b3d; border-color:#d96846; color:#fff">⬇️ PDF</button>
       <button class="ai-toggle" id="aiToggle" onclick="toggleAI()"
         style="background:linear-gradient(135deg,#D4915E 0%,#9673B9 100%)">🧠 IA</button>
     </div>
@@ -867,7 +867,7 @@
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         try {
           const obj = JSON.parse(e.target.result);
           if (obj.canvas && typeof obj.canvas === 'object') {
