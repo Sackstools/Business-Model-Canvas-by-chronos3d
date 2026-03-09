@@ -573,7 +573,6 @@
       <button class="export-btn" onclick="document.getElementById('importFile').click()"
         title="Carregar ficheiro do Computador">📂</button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
-      <button class="export-btn" onclick="exportMarkdown()">📝 MD</button>
       <button class="export-btn" onclick="exportPDF()" style="background:#bf5b3d; border-color:#d96846; color:#fff">⬇️ PDF</button>
       <button class="ai-toggle" id="aiToggle" onclick="toggleAI()"
         style="background:linear-gradient(135deg,#D4915E 0%,#9673B9 100%)">🧠 IA</button>
@@ -889,20 +888,6 @@
       reader.readAsText(file);
     }
 
-    function exportMarkdown() {
-      const name = document.getElementById('businessName').value;
-      let md = `# Business Model Canvas${name ? ': ' + name : ''}\n`;
-      md += `*Gerado em ${new Date().toLocaleDateString('pt-BR')}*\n\n`;
-      BLOCKS.forEach(b => {
-        const items = canvasData[b.id] || [];
-        md += `## ${b.icon} ${b.title}\n`;
-        if (items.length) items.forEach(i => md += `- ${i.text}\n`);
-        else md += `*(vazio)*\n`;
-        md += '\n';
-      });
-      const blob = new Blob([md], { type: 'text/markdown' });
-      downloadBlob(blob, `${(name || 'canvas').replace(/\s+/g, '_')}_BMC.md`);
-    }
 
     async function exportPDF() {
       const { jsPDF } = window.jspdf;

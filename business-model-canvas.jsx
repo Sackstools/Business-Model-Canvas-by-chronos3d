@@ -1014,28 +1014,6 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
     reader.readAsText(file);
   };
 
-  const exportMarkdown = () => {
-    let md = `# Business Model Canvas${businessName ? `: ${businessName}` : ""}\n`;
-    md += `*Gerado em ${new Date().toLocaleDateString("pt-BR")}*\n\n`;
-    CANVAS_BLOCKS.forEach((b) => {
-      const items = canvasData[b.id] || [];
-      md += `## ${b.icon} ${b.title}\n`;
-      if (items.length) {
-        items.forEach((i) => (md += `- ${i.text}\n`));
-      } else {
-        md += `*(vazio)*\n`;
-      }
-      md += "\n";
-    });
-    const blob = new Blob([md], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${(businessName || "canvas").replace(/\s+/g, "_")}_BMC.md`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   const exportPDF = async () => {
     if (!window.jspdf || !window.html2canvas) {
       alert("Bibliotecas para PDF não estão carregadas.");
@@ -1175,25 +1153,7 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
         <span>📂</span>
         <input type="file" accept=".json" style={{ display: "none" }} onChange={handleImportJSON} />
       </label>
-      <button
-        onClick={exportMarkdown}
-        style={{
-          background: "#2a2722",
-          color: "#e8e0d4",
-          border: "1px solid #3a3228",
-          borderRadius: "6px",
-          padding: "6px 14px",
-          cursor: "pointer",
-          fontSize: "12px",
-          fontWeight: 600,
-          fontFamily: "'DM Sans', sans-serif",
-          transition: "all 0.2s",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
-        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
-      >
-        📝 MD
-      </button>
+
       <button
         onClick={exportPDF}
         style={{
