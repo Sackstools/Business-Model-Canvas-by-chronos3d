@@ -1455,12 +1455,13 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
 ---
 Problema: ${prob.descricao}
 ---
-Os blocos que podem ter gerado este problema encontram-se no seguinte estado atual e necessitam de reestruturação:
+Os blocos que geraram este problema encontram-se no seguinte estado atual e necessitam de reestruturação urgente:
 ${currentStatusJson}
 
-A sua tarefa é RESOLVER ESTA GRAVIDADE alterando, apagando ou adicionando itens cirurgicamente a estes blocos para que o modelo fique perfeitamente alinhado com a área de atuação de "${bName}".
+A sua tarefa é RESOLVER ESTA GRAVIDADE EXECUTANDO MUTAÇÕES DIRETAS (Alterar, Apagar e Substituir) nos itens atuais.
+REGRA CRÍTICA: NÃO se limite a apenas criar e adicionar novos itens no final. Você DEVE obrigatoriamente REESCREVER e MELHORAR os itens problemáticos que já existem no estado atual, ou APAGÁ-LOS se causarem contradições insuperáveis.
 MUITO IMPORTANTE: Mantenha sempre um tom de voz rigoroso, técnico, que combine perfeitamente com a indústria do negócio (${bName}), seja direto e sem adjetivos vazios.
-Retorne APENAS um objeto JSON válido (cujas chaves são as IDs exatas dos blocos fornecidos). Cada chave deve conter um array final rigoroso de strings. Estes serão os itens finais que vão substituir inteiramente os blocos para erradicar a gravidade. Adicione ou exclua peças onde necessário para sanar a falha! NADA DE TEXTO ADICIONAL FORA DO JSON.`;
+Retorne APENAS um objeto JSON válido (cujas chaves são as IDs exatas dos blocos fornecidos). Cada chave deve conter a lista FINAL e COMPLETA dos itens (strings) que vão ficar no canvas, substituindo integralmente o que lá estava. NADA DE TEXTO ADICIONAL FORA DO JSON.`;
 
         const resp = await fetchWithRetry('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
