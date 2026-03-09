@@ -961,7 +961,7 @@ ${summary}`;
   );
 }
 
-function ExportPanel({ canvasData, businessName }) {
+function ExportPanel({ canvasData, businessName, onImportJSON }) {
   const exportJSON = () => {
     const blob = new Blob(
       [
@@ -985,6 +985,33 @@ function ExportPanel({ canvasData, businessName }) {
     a.download = `${(businessName || "canvas").replace(/\s+/g, "_")}_BMC.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleImportJSON = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const obj = JSON.parse(evt.target.result);
+        if (obj.canvas && typeof obj.canvas === "object") {
+          const newData = {};
+          CANVAS_BLOCKS.forEach((b) => {
+            const arr = obj.canvas[b.id] || [];
+            newData[b.id] = arr.map((txt, idx) => ({ id: Date.now() + idx, text: txt, color: "#ffffff" }));
+          });
+          if (onImportJSON) {
+            onImportJSON({ canvasData: newData, businessName: obj.nomeNegocio });
+          }
+        } else {
+          alert("O arquivo selecionado não parece ser um modelo de Canvas válido.");
+        }
+      } catch (err) {
+        alert("Erro ao ler formato do ficheiro: " + err.message);
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file);
   };
 
   const exportMarkdown = () => {
@@ -1107,6 +1134,7 @@ function ExportPanel({ canvasData, businessName }) {
     <div className="header-right" style={{ display: "flex", gap: "8px" }}>
       <button
         onClick={exportJSON}
+        title="Salvar ficheiro no seu Computador"
         style={{
           background: "#2a2722",
           color: "#e8e0d4",
@@ -1122,8 +1150,31 @@ function ExportPanel({ canvasData, businessName }) {
         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
       >
-        📄 JSON
+        💾 Salvar
       </button>
+
+      <label
+        title="Carregar ficheiro do Computador"
+        style={{
+          background: "#2a2722",
+          color: "#e8e0d4",
+          border: "1px solid #3a3228",
+          borderRadius: "6px",
+          padding: "6px 14px",
+          cursor: "pointer",
+          fontSize: "12px",
+          fontWeight: 600,
+          fontFamily: "'DM Sans', sans-serif",
+          transition: "all 0.2s",
+          display: "flex",
+          alignItems: "center",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#D4915E")}
+        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
+      >
+        <span>📂 Carregar</span>
+        <input type="file" accept=".json" style={{ display: "none" }} onChange={handleImportJSON} />
+      </label>
       <button
         onClick={exportMarkdown}
         style={{
@@ -1490,7 +1541,14 @@ export default function BusinessModelCanvas() {
           <span style={{ color: "#8a8278", fontSize: "12px" }}>
             {totalItems} {totalItems === 1 ? "item" : "itens"}
           </span>
-          <ExportPanel canvasData={canvasData} businessName={businessName} />
+          <ExportPanel 
+            canvasData={canvasData} 
+            businessName={businessName} 
+            onImportJSON={(data) => {
+              setCanvasData(data.canvasData);
+              if (data.businessName) setBusinessName(data.businessName);
+            }} 
+          />
           <button
             onClick={() => setShowAI((p) => !p)}
             style={{

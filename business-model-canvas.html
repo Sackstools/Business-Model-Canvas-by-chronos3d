@@ -569,7 +569,9 @@
     </div>
     <div class="header-right">
       <span class="item-count" id="itemCount">0 itens</span>
-      <button class="export-btn" onclick="exportJSON()">📄 JSON</button>
+      <button class="export-btn" onclick="exportJSON()" title="Salvar ficheiro no seu Computador">💾 Salvar</button>
+      <button class="export-btn" onclick="document.getElementById('importFile').click()" title="Carregar ficheiro do Computador">📂 Carregar</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
       <button class="export-btn" onclick="exportMarkdown()">📝 MD</button>
       <button class="export-btn" onclick="exportPDF()" style="background:#bf5b3d; border-color:#d96846; color:#fff">⬇️
         PDF</button>
@@ -859,6 +861,32 @@
       BLOCKS.forEach(b => obj.canvas[b.id] = (canvasData[b.id] || []).map(n => n.text));
       const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
       downloadBlob(blob, `${(name || 'canvas').replace(/\s+/g, '_')}_BMC.json`);
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const obj = JSON.parse(e.target.result);
+          if (obj.canvas && typeof obj.canvas === 'object') {
+            BLOCKS.forEach(b => {
+              const savedArray = obj.canvas[b.id] || [];
+              canvasData[b.id] = savedArray.map((text) => ({ id: nextId++, text, color: '#ffffff' }));
+            });
+            if (obj.nomeNegocio) document.getElementById('businessName').value = obj.nomeNegocio;
+            render();
+            saveLocal();
+          } else {
+            alert('Ficheiro inválido ou formato irreconhecível.');
+          }
+        } catch (err) {
+          alert('Erro ao carregar o seu Canvas: ' + err.message);
+        }
+        event.target.value = ''; // Limpa para permitir reabrir o mesmo depois
+      };
+      reader.readAsText(file);
     }
 
     function exportMarkdown() {
