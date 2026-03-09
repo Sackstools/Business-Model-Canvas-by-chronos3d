@@ -732,20 +732,15 @@ ${summary}`;
       const bName = businessName || 'Negócio Corporativo';
       const prompt = `Você é um Auditor e Corretor de Estratégias B2B para a empresa/projeto "${bName}".
 Um erro de validação foi encontrado no Canvas:
----
 Problema Detetado: ${prob.descricao}
----
+
 Os blocos afetados estão no seguinte estado atual (array de strings):
 ${currentStatusJson}
 
-A SUA TAREFA É DESTRUIR O ERRO E REESCREVER TOTALMENTE OS BLOCOS AFETADOS.
-Passo 1: Encontre a exata frase/item no "estado atual" que comete o erro descrito. 
-Passo 2: Essa frase DEVE desaparecer! Apague-a ou reescreva-a totalmente de forma a sanar a falha.
-Passo 3: Mantenha intactos os restantes itens que forem válidos e que não têm culpa do erro.
-Passo 4: NÃO se limite a apenas ditar um novo post-it no final da lista deixando o item original problemático para trás. É imperativo EXCLUIR ou MUTAR a raiz do problema.
+A SUA TAREFA É FORNECER UMA SUGESTÃO PRÁTICA DE SOLUÇÃO.
+Explique em 1 ou 2 parágrafos curtos e objetivos o que o utilizador deve alterar, excluir ou melhorar nos itens acima para resolver este problema de vez. Seja muito direto, indique qual a frase problemática e qual deve ser o seu substituto ideal no contexto corporativo B2B.
 
-Mantenha um tom técnico, industrial e sério (${bName}).
-Retorne APENAS um objeto JSON. As chaves devem ser exatas IDs fornecidas acima. O Array atribuído a cada chave representará o CONJUNTO FINAL e COMPLETO de post-its que o utilizador verá no ecrã (os bons itens que foram mantidos + os itens problemáticos que você corrigiu). NADA DE TEXTO ADICIONAL FORA DO JSON.`;
+Retorne APENAS um objeto JSON. A chave do JSON deve ser exatamente "solucao" e o valor deve ser o texto da sua sugestão. NADA DE TEXTO ADICIONAL FORA DO JSON. Formato esperado: {"solucao": "O seu texto..."}`;
 
       const resp = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
@@ -782,14 +777,26 @@ Retorne APENAS um objeto JSON. As chaves devem ser exatas IDs fornecidas acima. 
         parsed = JSON.parse(jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2"));
       }
 
-      if (onAutoFix) {
-        onAutoFix(parsed);
-      }
-
-      btn.textContent = "✅ Corrigido!";
-      btn.style.background = "#4E8A5033";
-      btn.style.color = "#4E8A50";
-      btn.style.borderColor = "#4E8A50";
+      const solText = parsed.solucao || "Nenhuma sugestão encontrada. Reveja o bloco manualmente.";
+      const safeText = solText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+      
+      btn.innerHTML = `💡 Ver Solução <div class="sol-tooltip" style="display:none;position:absolute;bottom:130%;left:50%;transform:translateX(-50%);width:250px;background:#1e1b18;border:1px solid #0d47a1;padding:12px;border-radius:6px;color:#e8e0d4;box-shadow:0 8px 16px rgba(0,0,0,0.8);z-index:99999;font-weight:normal;text-align:left;white-space:normal;line-height:1.4;pointer-events:none;font-size:11px;">${safeText}</div>`;
+      btn.style.background = "#0d47a133";
+      btn.style.borderColor = "#0d47a1";
+      btn.style.color = "#82b1ff";
+      btn.style.overflow = "visible";
+      btn.disabled = false;
+      btn.onclick = null;
+      btn.onmouseover = (e) => {
+        e.currentTarget.style.background = '#0d47a155';
+        const tt = e.currentTarget.querySelector('.sol-tooltip');
+        if (tt) tt.style.display = 'block';
+      };
+      btn.onmouseout = (e) => {
+        e.currentTarget.style.background = '#0d47a133';
+        const tt = e.currentTarget.querySelector('.sol-tooltip');
+        if (tt) tt.style.display = 'none';
+      };
     } catch (err) {
       console.error(err);
       btn.textContent = "⚠️ Erro (" + err.message + ")";
@@ -942,11 +949,11 @@ Retorne APENAS um objeto JSON. As chaves devem ser exatas IDs fornecidas acima. 
                           const btn = e.currentTarget;
                           fixValidationProblem(btn, b64Prob, prob);
                         }}
-                        style={{ background: `${gravColor}22`, color: gravColor, border: `1px solid ${gravColor}66`, borderRadius: "4px", fontSize: "10px", padding: "4px 8px", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", display: "block", width: "100%" }}
-                        onMouseOver={(e) => e.currentTarget.style.background = `${gravColor}44`}
-                        onMouseOut={(e) => e.currentTarget.style.background = `${gravColor}22`}
+                        style={{ position: "relative", background: `${gravColor}22`, color: gravColor, border: `1px solid ${gravColor}66`, borderRadius: "4px", fontSize: "10px", padding: "4px 8px", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", display: "block", width: "100%" }}
+                        onMouseOver={(e) => { e.currentTarget.style.background = `${gravColor}44`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='block'; }}
+                        onMouseOut={(e) => { e.currentTarget.style.background = `${gravColor}22`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='none'; }}
                       >
-                        🛠️ Solucionar Automaticamente
+                        💡 Sugerir Solução
                       </button>
                     </div>
                   );
