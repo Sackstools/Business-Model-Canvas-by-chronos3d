@@ -585,7 +585,7 @@ Retorne um JSON com:
   "_analise": "análise detalhada focada na aderência à função do bloco e viabilidade",
   "_pontos_atencao": ["ponto 1", "ponto 2..."] (se nenhum, array vazio)
 }
-IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro.`;
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUNCA use quebras de linha reais dentro dos textos (use \\n se precisar separar parágrafos) e NUNCA utilize aspas duplas para destacar coisas no texto, use sempre apóstrofos (' ').`;
     }
 
     if (currentMode === "brainstorm_block" && targetBlockId) {
@@ -603,7 +603,7 @@ Retorne um JSON com esta estrutura:
     "✨ Exemplo de ideia prática 3"
   ]
 }
-IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Prefira sugestões acionáveis e diretas.`;
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Prefira sugestões acionáveis e diretas. NUNCA use quebras de linha reais no texto gerado, e NUNCA utilize aspas duplas no seu texto criado!`;
     }
 
     const modeInstructions = {
@@ -614,7 +614,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
     return `Você é um especialista em estratégia de negócios analisando um Business Model Canvas.
 ${modeInstructions[currentMode]}
 
-IMPORTANTE: Responda APENAS com JSON válido, sem markdown, sem crases, sem explicação. Todas as sugestões devem ser em português brasileiro.
+IMPORTANTE: Responda APENAS com JSON válido, sem markdown, sem crases, sem explicação. Todas as sugestões devem ser em português brasileiro. NUNCA utilize quebras de linha reais (Enters) dentro dos campos de texto (se precisar, escreva \\n) e NUNCA utilize aspas duplas (") dentro das suas frases, substitua todas as aspas literias internas por apóstrofos simples (' ').
 
 Canvas Atual:
 ${summary}`;
@@ -628,19 +628,46 @@ ${summary}`;
       const currentMode = overrideMode || mode;
       const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
       const isAnalysis = currentMode === "analyze_block";
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey, {
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+           "Content-Type": "application/json",
+           "Authorization": `Bearer ${apiKey}`
+        },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: generatePrompt(overrideTarget, overrideMode) }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 1500, responseMimeType: "application/json" }
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "user", content: generatePrompt(overrideTarget, overrideMode) }],
+          temperature: 0.7,
+          max_tokens: 4000,
+          response_format: { type: "json_object" }
         }),
       });
-      if (!response.ok) throw new Error("Chave Gemini inválida ou erro na API");
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        let errMsg = errData?.error?.message || `Erro HTTP ${response.status}`;
+        if (response.status === 429) {
+           throw new Error("Você atingiu o limite de perguntas rápidas da Groq API. Aguarde alguns segundos.");
+        }
+        throw new Error("Erro na Groq API: " + errMsg);
+      }
       const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      const cleaned = text.replace(/\`\`\`json|\`\`\`/g, "").trim();
-      const parsed = JSON.parse(cleaned);
+      const text = data.choices[0].message.content || "";
+      let cleaned = text.replace(/\`\`\`json|\`\`\`/gi, "").trim();
+      const primeiraChaveta = cleaned.indexOf('{');
+      const ultimaChaveta = cleaned.lastIndexOf('}');
+      let jsonSeguro = cleaned;
+      if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+          jsonSeguro = cleaned.substring(primeiraChaveta, ultimaChaveta + 1);
+      }
+      jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonSeguro);
+      } catch (e) {
+        let ultraClean = jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2");
+        parsed = JSON.parse(ultraClean);
+      }
 
       if (isAnalysis) {
         setSuggestions({ _isBlockAnalysis: true, target: targetBlockId, data: parsed });
@@ -692,8 +719,8 @@ ${summary}`;
       </div>
 
       <div style={{ flexShrink: 0 }}>
-        <label style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8a8278", fontWeight: 600, display: "block", marginBottom: "4px" }}>🔑 Chave Google Gemini</label>
-        <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="AIzaSy..." style={{ width: "100%", background: "#2a2722", border: "1px solid #3a3228", borderRadius: "4px", padding: "6px 8px", color: "#e8e0d4", fontSize: "11px", fontFamily: "'DM Sans', sans-serif", outline: "none", marginBottom: "8px" }} onFocus={(e) => e.target.style.borderColor = "#D4915E"} onBlur={(e) => e.target.style.borderColor = "#3a3228"} />
+        <label style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8a8278", fontWeight: 600, display: "block", marginBottom: "4px" }}>🔑 Chave Llama 3 (Groq)</label>
+        <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="gsk_..." style={{ width: "100%", background: "#2a2722", border: "1px solid #3a3228", borderRadius: "4px", padding: "6px 8px", color: "#e8e0d4", fontSize: "11px", fontFamily: "'DM Sans', sans-serif", outline: "none", marginBottom: "8px" }} onFocus={(e) => e.target.style.borderColor = "#D4915E"} onBlur={(e) => e.target.style.borderColor = "#3a3228"} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px", flexShrink: 0 }}>

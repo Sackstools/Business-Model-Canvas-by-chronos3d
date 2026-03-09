@@ -589,7 +589,7 @@
       <div style="flex-shrink:0">
         <label
           style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#8a8278;font-weight:600;display:block;margin-bottom:4px">🔑
-          Chave Google Gemini <span style="color:#4E8A50;font-weight:700">GRÁTIS</span></label>
+          Chave Llama 3 (Groq API) <span style="color:#4E8A50;font-weight:700">GRÁTIS</span></label>
         <div style="display:flex;gap:4px">
           <input type="password" id="apiKey" placeholder="AIzaSy..."
             style="flex:1;background:#2a2722;border:1px solid #3a3228;border-radius:4px;padding:6px 8px;color:#e8e0d4;font-size:11px;font-family:'DM Sans',sans-serif;outline:none"
@@ -599,15 +599,15 @@
             style="background:#2a2722;border:1px solid #3a3228;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:12px;color:#8a8278"
             title="Mostrar/ocultar chave">👁</button>
         </div>
-        <a href="https://aistudio.google.com/apikey" target="_blank"
+        <a href="https://console.groq.com/keys" target="_blank"
           style="font-size:10px;color:#D4915E;text-decoration:none;display:inline-block;margin-top:4px">Obter chave
-          grátis em aistudio.google.com →</a>
+          grátis ultrarrápida em console.groq.com →</a>
       </div>
       <div class="mode-grid" id="modeGrid"></div>
       <button class="run-btn" id="runBtn" onclick="runAI()">Executar Preencher</button>
       <div id="aiContent">
-        <div class="ai-placeholder">Insira sua chave Gemini gratuita acima, selecione um modo e clique em Executar para
-          obter insights estratégicos com IA.</div>
+        <div class="ai-placeholder">Insira sua chave Groq gratuita acima, selecione um modo e clique em Executar para
+          obter insights estratégicos com a Llama 3.</div>
       </div>
     </div>
   </div>
@@ -1027,7 +1027,7 @@ Seja rigoroso mas construtivo. Identifique TODOS os problemas. IDs válidos dos 
       const prompt = `Você é um especialista em estratégia de negócios analisando um Business Model Canvas.
 ${instructions[currentMode]}
 
-IMPORTANTE: Responda APENAS com JSON válido, sem markdown, sem crases, sem explicação. Tudo em português brasileiro.
+IMPORTANTE: Responda APENAS com JSON válido, sem markdown, sem crases, sem explicação. Tudo em português brasileiro. NUNCA utilize quebras de linha reais (Enters) dentro dos campos de texto (se precisar, escreva \\n). NUNCA utilize aspas duplas (") dentro das suas frases/textos, substitua TODAS as aspas internas por apóstrofos simples (' ').
 
 Canvas Atual:
 ${summary}`;
@@ -1046,35 +1046,64 @@ ${summary}`;
       try {
         const apiKey = document.getElementById('apiKey').value.trim();
         if (!apiKey) {
-          content.innerHTML = `<div style="background:#3a2a1a;border:1px solid #8b6030;border-radius:6px;padding:10px;font-size:12px;color:#e8b44c">⚠️ Insira sua chave Gemini no campo acima. Obtenha grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#D4915E">aistudio.google.com</a></div>`;
+          content.innerHTML = `<div style="background:#3a2a1a;border:1px solid #8b6030;border-radius:6px;padding:10px;font-size:12px;color:#e8b44c">⚠️ Insira sua chave Groq no campo acima. Obtenha grátis em <a href="https://console.groq.com/keys" target="_blank" style="color:#D4915E">console.groq.com</a></div>`;
           btn.textContent = `Executar ${MODES.find(m => m.id === currentMode).label}`;
           btn.disabled = false;
           return;
         }
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+        const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1500, responseMimeType: 'application/json' }
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+            max_tokens: 4000,
+            response_format: { type: 'json_object' }
           })
         });
         if (!resp.ok) {
           const errData = await resp.json().catch(() => ({}));
-          const errMsg = errData?.error?.message || `Erro HTTP ${resp.status}`;
+          let errMsg = errData?.error?.message || `Erro HTTP ${resp.status}`;
+          if (resp.status === 429) {
+            errMsg = "Você enviou pedidos rápidos demais para a Groq API. Por favor, aguarde alguns segundos.";
+          }
           throw new Error(errMsg);
         }
         const data = await resp.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        const cleaned = text.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
+        const text = data.choices[0].message.content || '';
+
+        // 1. Localizar de forma absoluta onde começa e onde acaba o bloco de JSON
+        const primeiraChaveta = text.indexOf('{');
+        const ultimaChaveta = text.lastIndexOf('}');
+        let jsonSeguro = text;
+
+        if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+          jsonSeguro = text.substring(primeiraChaveta, ultimaChaveta + 1);
+        }
+
+        // 2. Proteger aspas duplas desamparadas e novas linhas a meio e só depois fazer Parse
+        jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+
+        let parsed;
+        try {
+          parsed = JSON.parse(jsonSeguro);
+        } catch (e) {
+          // Fallback ultra-agressivo para json corrompido: Substituir aspas problemáticas a meio de keys e limpezas profundas
+          let ultraClean = jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2");
+          parsed = JSON.parse(ultraClean);
+        }
+
         if (currentMode === 'validate') {
           renderValidation(parsed);
         } else {
           renderSuggestions(parsed);
         }
       } catch (err) {
-        content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha na IA: ${escapeHtml(err.message)}.<br><br>Verifique se a chave está correta em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#D4915E">aistudio.google.com</a></div>`;
+        content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha na IA: ${escapeHtml(err.message)}.<br><br>Verifique se tem uma chave Groq válida e grátis em <a href="https://console.groq.com/keys" target="_blank" style="color:#D4915E">console.groq.com</a></div>`;
         console.error(err);
       }
       btn.textContent = `Executar ${MODES.find(m => m.id === currentMode).label}`;
@@ -1212,26 +1241,52 @@ Retorne um JSON com:
   "_analise": "análise detalhada focada na aderência à função do bloco e viabilidade",
   "_pontos_atencao": ["ponto 1", "ponto 2..."] (se nenhum, array vazio)
 }
-IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro.`;
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUNCA use quebras de linha reais dentro dos textos (use \\n se precisar separar parágrafos). NUNCA use aspas duplas para citar texto nas suas respostas, use apenas apóstrofos (' ').`;
 
       try {
         const apiKey = document.getElementById('apiKey').value.trim();
         if (!apiKey) {
-          throw new Error("Insira sua chave Gemini no campo acima.");
+          throw new Error("Insira sua chave Groq no campo acima.");
         }
 
-        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+        const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1000, responseMimeType: 'application/json' }
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+            max_tokens: 4000,
+            response_format: { type: 'json_object' }
           })
         });
-        if (!resp.ok) throw new Error("Erro de conexão / Chave inválida");
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          let errMsg = errData?.error?.message || `Erro HTTP ${resp.status}`;
+          if (resp.status === 429) {
+            throw new Error("Muitos pedidos simultaneos à Groq API, abrande um pouco.");
+          }
+          throw new Error("Erro de conexão / Chave: " + errMsg);
+        }
         const data = await resp.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        const parsed = JSON.parse(text.replace(/\`\`\`json|\`\`\`/g, '').trim());
+        const text = data.choices[0].message.content || '';
+        const primeiraChaveta = text.indexOf('{');
+        const ultimaChaveta = text.lastIndexOf('}');
+        let jsonSeguro = text;
+        if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+          jsonSeguro = text.substring(primeiraChaveta, ultimaChaveta + 1);
+        }
+        jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+        let parsed;
+        try {
+          parsed = JSON.parse(jsonSeguro);
+        } catch (e) {
+          let ultraClean = jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2");
+          parsed = JSON.parse(ultraClean);
+        }
         renderBlockAnalysis(parsed, block);
       } catch (err) {
         content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha na análise: ${escapeHtml(err.message)}</div>`;
@@ -1263,24 +1318,50 @@ Retorne um JSON com esta estrutura:
     "✨ Exemplo de ideia prática 3"
   ]
 }
-IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Prefira sugestões acionáveis e diretas.`;
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Prefira sugestões acionáveis e diretas. NUNCA use quebras de linha reais no texto gerado! NUNCA use aspas duplas nas suas frases criadas, utilize sempre apóstrofos (' ').`;
 
       try {
         const apiKey = document.getElementById('apiKey').value.trim();
-        if (!apiKey) throw new Error("Insira sua chave Gemini no campo acima.");
+        if (!apiKey) throw new Error("Insira sua chave Groq no campo acima.");
 
-        const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+        const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.8, maxOutputTokens: 1000, responseMimeType: 'application/json' }
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.8,
+            max_tokens: 4000,
+            response_format: { type: 'json_object' }
           })
         });
-        if (!resp.ok) throw new Error("Erro de conexão / Chave inválida");
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          let errMsg = errData?.error?.message || `Erro HTTP ${resp.status}`;
+          if (resp.status === 429) {
+            throw new Error("Abrandar um pouco! As ideias estão a chegar rápido demais para a API aguentar.");
+          }
+          throw new Error("Erro de conexão / Chave Groq: " + errMsg);
+        }
         const data = await resp.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        const parsed = JSON.parse(text.replace(/\`\`\`json|\`\`\`/g, '').trim());
+        const text = data.choices[0].message.content || '';
+        const primeiraChaveta = text.indexOf('{');
+        const ultimaChaveta = text.lastIndexOf('}');
+        let jsonSeguro = text;
+        if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+          jsonSeguro = text.substring(primeiraChaveta, ultimaChaveta + 1);
+        }
+        jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+        let parsed;
+        try {
+          parsed = JSON.parse(jsonSeguro);
+        } catch (e) {
+          let ultraClean = jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2");
+          parsed = JSON.parse(ultraClean);
+        }
         renderSuggestions(parsed);
       } catch (err) {
         content.innerHTML = `<div style="background:#3a1a1a;border:1px solid #8b3030;border-radius:6px;padding:10px;font-size:12px;color:#e88">Falha ao gerar ideias: ${escapeHtml(err.message)}</div>`;
