@@ -563,7 +563,7 @@
     <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <span class="tpl-label">Modelos:</span>
       <button class="tpl-btn" onclick="loadTemplate('blank')">Canvas Vazio</button>
-      <button class="tpl-btn" onclick="loadTemplate('saas')">SaaS Startup</button>
+      <button class="tpl-btn" onclick="loadTemplate('saas')">Manuf. Aditiva Industrial</button>
       <button class="tpl-btn" onclick="loadTemplate('ecommerce')">E-Commerce</button>
       <button class="tpl-btn" onclick="loadTemplate('marketplace')">Marketplace</button>
     </div>
@@ -641,15 +641,15 @@
     const TEMPLATES = {
       blank: {},
       saas: {
-        key_partners: ["Provedores de Nuvem (AWS/Azure)", "Parceiros de Integração (Slack/Jira)", "Agências especializadas em Marketing B2B"],
-        key_activities: ["Desenvolvimento Ágil e contínuo do software", "Gestão do Customer Success e Retenção", "Aquisição de clientes via Inbound Marketing"],
-        key_resources: ["Equipe de Engenheiros e UX/UI de topo", "Servidores escaláveis de alta disponibilidade", "Algoritmos proprietários de Machine Learning"],
-        value_propositions: ["Redução de 30% no tempo de criação de relatórios", "Centralização da comunicação da equipe em tempo real", "Previsibilidade de entrega de projetos com IA avançada"],
-        customer_relationships: ["Suporte técnico 24/7 (CSM dedicado para planos Enterprise)", "Processo de Onboarding automatizado para novos usuários", "Comunidade VIP e base de conhecimento robusta"],
-        channels: ["Equipe de Vendas Inbound", "Marketing de Conteúdo (SEO e Blog técnico)", "Ads segmentados no LinkedIn e Google"],
-        customer_segments: ["Médias Empresas (PMEs) em crescimento", "Equipes de engenharia de software e agilidade", "Gerentes de projeto e produtos focados no B2B"],
-        cost_structure: ["Altos salários e encargos da equipa de desenvolvimento e engenharia", "Custos mensais contínuos com hospedagem Cloud e APIs externas", "Investimento massivo em CAC (Marketing Técnico e Vendas)"],
-        revenue_streams: ["Assinatura Mensal Recorrente (MRR por Utilizador)", "Taxa adicional de upgrade para assentos vitais", "Pacotes adicionais de Consultoria e Implementação Premium"],
+        key_partners: ["Fornecedores de pó de metal e polímeros avançados", "Centros de pesquisa e universidades (P&D colaborativo)", "Distribuidores e integradores de tecnologia industrial"],
+        key_activities: ["P&D de novos sistemas de extrusão e fusão", "Calibração e controle de qualidade extremamente rigoroso", "Montagem e manutenção preditiva de hardware"],
+        key_resources: ["Patentes de tecnologia de impressão 3D industrial", "Equipe de engenharia mecatrônica e ciência dos materiais", "Instalações de montagem e calibração de precisão"],
+        value_propositions: ["Redução de desperdício na produção de peças metálicas/poliméricas complexas", "Velocidade na prototipagem e fabricações flexíveis de pequenos lotes", "Equipamentos robustos para uso contínuo (24/7) de grau industrial no chão de fábrica"],
+        customer_relationships: ["Contratos de Monitoramento contínuo (SLA de assistência rápida)", "Treinamento presencial intensivo para operadores e engenheiros", "Co-desenvolvimento de aplicações e parâmetros de impressão customizados"],
+        channels: ["Vendas diretas B2B (Key Account Executives)", "Feiras internacionais de tecnologia industrial (ex: Formnext)", "Representantes e parceiros integradores especializados em maquinários pesados"],
+        customer_segments: ["Indústrias aeroespacial, automotiva e da saúde (próteses médicas)", "Birôs de fabricação e modelagem de moldes de injeção (tooling)", "Centros de pesquisa avançada e inovação em novos materiais"],
+        cost_structure: ["Custos massivos com prototipagem, Pesquisa e Desenvolvimento (P&D)", "Aquisição de peças CNC e componentes mecatrônicos de alta precisão", "Formação e operação de uma dispendiosa equipa de suporte técnico B2B global"],
+        revenue_streams: ["Venda direta de máquinas industriais de grande formato (CapEx)", "Contratos anuais rentáveis de manutenção, software e calibração técnica", "Venda de insumos proprietários (pós metálicos e ligas resinosas) homologados"],
       },
       ecommerce: {
         key_partners: ["Fornecedores certificados de matéria-prima orgânica", "Transportadoras com soluções 'Last-Mile' verdes", "Micro-Influenciadores embaixadores da marca"],
@@ -841,7 +841,7 @@
       });
       const nameInput = document.getElementById('businessName');
       if (key !== 'blank' && !nameInput.value) {
-        const names = { saas: 'SaaS Startup — Exemplo', ecommerce: 'E-Commerce — Exemplo', marketplace: 'Marketplace — Exemplo' };
+        const names = { saas: 'Manufatura Aditiva Ind. — Exemplo', ecommerce: 'E-Commerce — Exemplo', marketplace: 'Marketplace — Exemplo' };
         nameInput.value = names[key] || '';
       }
       render();
@@ -1058,7 +1058,7 @@ ${summary}`;
             'Authorization': `Bearer ${apiKey}`
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: 'llama-3.1-8b-instant',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.7,
             max_tokens: 4000,
@@ -1256,7 +1256,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUN
             'Authorization': `Bearer ${apiKey}`
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: 'llama-3.1-8b-instant',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.7,
             max_tokens: 4000,
@@ -1331,7 +1331,7 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
             'Authorization': `Bearer ${apiKey}`
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: 'llama-3.1-8b-instant',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.8,
             max_tokens: 4000,
