@@ -89,15 +89,15 @@ const INITIAL_STATE = Object.fromEntries(
 );
 
 const BLOCK_RULES = {
-  customer_segments: "TESE DO BLOCO (Segmentos): Avaliar se os nichos estão bem definidos com foco na dor. O mercado rejeita a falácia de 'vender para todos'. Exija uma hiper-segmentação e penalize alvos genéricos.",
-  value_propositions: "TESE DO BLOCO (Proposta): Avaliar qual a dor aguda e tangível resolvida. Não avalie funcionalidades técnicas do produto, mas sim o ganho real e impacto gerado (status, redução de custo, tempo).",
-  channels: "TESE DO BLOCO (Canais): Avaliar viabilidade de aquisição vs custo. Como a empresa chega aos clientes na prática? Penalize 'redes sociais' ou 'marketing digital' se for vago e sem estratégia acionável.",
-  customer_relationships: "TESE DO BLOCO (Relacionamento): Avaliar engajamento e retenção. Existe um custo de servir que faz sentido (ex: suporte dedicado humano num ticket baixo não é viável)? Penalize omissões estratégicas.",
-  revenue_streams: "TESE DO BLOCO (Receitas): Avaliar como se monetiza na prática. Focar se o modelo (assinatura, venda unitária, freemium) é coerente com os Segmentos e se permite crescimento sem bater no teto.",
-  key_resources: "TESE DO BLOCO (Recursos): Avaliar ativos imprescindíveis sem os quais o negócio morre na praia. Foco em Propriedade Intelectual, Infraestrutura Pesada ou Talento de topo. Penalize 'computadores' e futilidades.",
-  key_activities: "TESE DO BLOCO (Atividades): Avaliar a operação core e contínua do modelo. Penalize gestão rotineira que toda empresa faz. Exija foco nas engrenagens ativas da Proposta de Valor.",
-  key_partners: "TESE DO BLOCO (Parcerias): Avaliar se reduzem riscos reais ou evitam a compra de Recursos Chave. Penalize ecossistemas ilusórios que não trazem poder tático ou trazem dependência letal no curto prazo.",
-  cost_structure: "TESE DO BLOCO (Custos): Avaliar os maiores drenos financeiros de forma crua. Penalize esquecimento e subestimação do CAC (Custo de Aquisição de Cliente) ou da manutenção da equipa. A conta tem que fechar com a Receita."
+  customer_segments: "TESE: Segmentos de Clientes definem os diferentes grupos de pessoas ou organizações que a empresa visa alcançar. É o 'PARA QUEM'. O preenchimento eficiente exige hiper-segmentação: evite o 'público geral'. Foque em nichos com dores idênticas e comportamentos de compra semelhantes.",
+  value_propositions: "TESE: Proposta de Valor é o motivo pelo qual clientes escolhem sua empresa em vez de outra. Responde 'O QUÊ' você resolve. Deve focar no ganho (tempo, dinheiro, status) ou na redução de dor, e não em listas técnicas de funcionalidades.",
+  channels: "TESE: Canais descrevem como a empresa comunica e alcança seus segmentos para entregar o valor. Cobrem fases de Conhecimento, Avaliação, Compra e Entrega. Devem ser analisados pelo custo de aquisição e conveniência para o cliente.",
+  customer_relationships: "TESE: Relacionamento define o tipo de vínculo que a empresa estabelece com cada segmento. Foca em 'COMO' reter clientes. Deve ser coerente com o ticket médio: tickets baixos exigem automação, tickets altos exigem proximidade humana.",
+  revenue_streams: "TESE: Fontes de Receita representam o dinheiro gerado. É o 'QUANTO'. Foque na precificação (fixa vs dinâmica) e no modelo (assinatura, venda única, licenciamento). Deve refletir o valor percebido pelo segmento.",
+  key_resources: "TESE: Recursos Principais são os ativos fundamentais para o modelo rodar. Físicos, intelectuais, humanos ou financeiros. Liste apenas o que é CRÍTICO. Se o modelo morre sem o recurso, ele é Chave. Caso contrário, ignore.",
+  key_activities: "TESE: Atividades-Chave são as ações mais importantes que a empresa deve realizar. Produção, Resolução de Problemas ou Plataforma. Devem estar diretamente ligadas à entrega da Proposta de Valor.",
+  key_partners: "TESE: Parcerias-Chave são a rede de fornecedores e parceiros que fazem o modelo funcionar. Alianças estratégicas, coopetição ou joint-ventures. Servem para otimizar o modelo, reduzir riscos ou adquirir recursos que você não quer produzir internamente.",
+  cost_structure: "TESE: Estrutura de Custos descreve todos os custos operacionais. Identifique se o negócio é 'Direcionado pelo Custo' (baixo custo) ou 'Direcionado pelo Valor' (premium). Liste os gatilhos que mais drenam caixa."
 };
 
 function NoteCard({ note, onDelete, onEdit, accent }) {
@@ -598,28 +598,29 @@ function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, bu
       const items = canvasData[block.id] || [];
       const rule = BLOCK_RULES[targetBlockId] || "";
 
-      return `Você é um Analista de Mercado Sênior especializado em Business Model Canvas. O usuário está elaborando o módulo "${block.title}" do negócio.
+      return `Você é um Mentor Estratégico Sênior especializado em Business Model Canvas. O seu objetivo é ANALISAR e ENSINAR o usuário.
 
-CONTEÚDO DO MÓDULO "${block.title}" A SER AVALIADO:
-${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(MÓDULO VAZIO - DEVE RECEBER NOTA ZERO IMEDIATAMENTE)'}
-
-Contexto do resto do negócio (USE APENAS PARA REFERÊNCIA):
+MÓDULO ATUAL: "${block.title}"
+CONTEXTO DO NEGÓCIO: 
 ${summary}
 
-AVISO CRÍTICO E REGRA DE OURO: A sua nota deve ser EXCLUSIVAMENTE sobre o conteúdo inserido no módulo "${block.title}".
+CONTEÚDO PARA ANÁLISE:
+${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(VAZIO - INSPECIONE ESTA LACUNA)'}
 
-${rule ? "DIRETRIZ METODOLÓGICA OBRIGATÓRIA PARA ESTE BLOCO:\\n" + rule : ""}
+SUA TAREFA:
+1. Avalie tecnicamente os itens listados. Se estiver vazio, explique por que este bloco é vital.
+2. Seja instrutivo: explique a teoria por trás deste bloco "${block.title}".
+3. Dê uma direção clara de como preencher este módulo de forma eficiente.
 
-Perspetiva de Análise:
-1. Os itens inseridos AQUI são excessivamente genéricos? Penalize severamente o genérico.
-2. Os itens AQUI introduzem um passivo, fricção ou gargalo que não se sustenta no mercado?
-3. Há falta de alinhamento com a finalidade estratégica deste bloco específico no modelo Canvas?
+A TESE TÉCNICA PARA ESTE BLOCO É: ${rule}
 
 Retorne um JSON estruturado:
 {
-  "_nota_modulo": número de 0 a 100 julgando EXCLUSIVAMENTE a qualidade técnica deste bloco (se vazio = 0),
-  "_analise": "análise brutalmente franca, focada 100% no conteúdo acima.",
-  "_pontos_atencao": ["crítica específica"]
+  "_nota_modulo": número de 0 a 100,
+  "_analise": "crítica curta e direta sobre o que está escrito (ou falta de escrita).",
+  "_instrucao": "ensine aqui como este bloco especifíco deve ser preenchido segundo a técnica Canvas clássica. Explique o 'porquê' e o 'como'.",
+  "_dica_mestre": "uma dica estratégica de impacto para o usuário.",
+  "_pontos_atencao": ["risco 1", "risco 2"]
 }
 IMPORTANTE: Responda APENAS com JSON válido. NUNCA use aspas duplas no seu texto criado, utilize sempre apóstrofos (' '). Use \\n para quebras de linha nas strings.`;
     }
@@ -1038,18 +1039,41 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
             return (
               <>
                 <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${block.accent}44` }}>
-                  <div style={{ fontSize: "12px", textTransform: "uppercase", color: block.accent, fontWeight: 700, marginBottom: "8px" }}>{block.icon} {block.title}</div>
-                  <div style={{ fontSize: "36px", fontWeight: 900, color: notaColor, fontFamily: "'Playfair Display', serif", lineHeight: 1 }}>{data._nota_modulo}</div>
-                  <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: notaColor, marginTop: "2px" }}>Legitimidade e Coerência</div>
+                  <div style={{ fontSize: "11px", textTransform: "uppercase", color: block.accent, fontWeight: 700, marginBottom: "8px", letterSpacing: "0.1em" }}>{block.icon} {block.title}</div>
+                  <div style={{ fontSize: "36px", fontWeight: 900, color: notaColor, fontFamily: "'DM Sans', sans-serif", lineHeight: 1 }}>{data._nota_modulo}</div>
+                  <div style={{ fontSize: "9px", color: "#8a8278", marginTop: "4px" }}>SCORE DE EFICIÊNCIA</div>
                 </div>
-                <div style={{ background: "#2a2722", borderRadius: "4px", padding: "10px", fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4 }}>
-                  {data._analise}
+                
+                <div style={{ background: "#2a2722", borderRadius: "6px", padding: "12px", borderTop: "1px solid #3a3228" }}>
+                  <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#8a8278", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🔍 Análise do Mentor</div>
+                  <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.5 }}>
+                    {data._analise}
+                  </div>
                 </div>
+
+                {data._instrucao && (
+                  <div style={{ background: "#1e3a5f22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #3b82f6", borderTop: "1px solid #1e3a5f44" }}>
+                    <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#60a5fa", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🎓 Teoria e Método</div>
+                    <div style={{ fontSize: "12px", color: "#93c5fd", lineHeight: 1.5 }}>
+                      {data._instrucao}
+                    </div>
+                  </div>
+                )}
+
+                {data._dica_mestre && (
+                  <div style={{ background: "#D4915E22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #D4915E", borderTop: "1px solid #D4915E44" }}>
+                    <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#D4915E", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🏆 Dica de Mestre</div>
+                    <div style={{ fontSize: "12px", color: "#e8e0d4", lineHeight: 1.5, fontStyle: "italic" }}>
+                      "{data._dica_mestre}"
+                    </div>
+                  </div>
+                )}
+
                 {data._pontos_atencao?.length > 0 && (
                   <div>
-                    <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "#BF5B3D", marginBottom: "6px" }}>⚠️ Pontos de Atenção</div>
+                    <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#BF5B3D", fontWeight: 800, marginBottom: "8px", letterSpacing: "0.1em" }}>⚠️ Pontos de Atenção</div>
                     {data._pontos_atencao.map((p, i) => (
-                      <div key={i} style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "6px 8px", marginBottom: "4px", borderLeft: "3px solid #BF5B3D" }}>{p}</div>
+                      <div key={i} style={{ fontSize: "11px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: "3px solid #BF5B3D" }}>{p}</div>
                     ))}
                   </div>
                 )}
