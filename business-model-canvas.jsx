@@ -584,6 +584,20 @@ function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, bu
     if (currentMode === "analyze_block" && targetBlockId) {
       const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
       const items = canvasData[block.id] || [];
+
+      const blockRules = {
+        customer_segments: "TESE DO BLOCO (Segmentos): Avaliar se os nichos estão bem definidos com foco na dor. O mercado rejeita a falácia de 'vender para todos'. Exija uma hiper-segmentação e penalize alvos genéricos.",
+        value_propositions: "TESE DO BLOCO (Proposta): Avaliar qual a dor aguda e tangível resolvida. Não avalie funcionalidades técnicas do produto, mas sim o ganho real e impacto gerado (status, redução de custo, tempo).",
+        channels: "TESE DO BLOCO (Canais): Avaliar viabilidade de aquisição vs custo. Como a empresa chega aos clientes na prática? Penalize 'redes sociais' ou 'marketing digital' se for vago e sem estratégia acionável.",
+        customer_relationships: "TESE DO BLOCO (Relacionamento): Avaliar engajamento e retenção. Existe um custo de servir que faz sentido (ex: suporte dedicado humano num ticket baixo não é viável)? Penalize omissões estratégicas.",
+        revenue_streams: "TESE DO BLOCO (Receitas): Avaliar como se monetiza na prática. Focar se o modelo (assinatura, venda unitária, freemium) é coerente com os Segmentos e se permite crescimento sem bater no teto.",
+        key_resources: "TESE DO BLOCO (Recursos): Avaliar ativos imprescindíveis sem os quais o negócio morre na praia. Foco em Propriedade Intelectual, Infraestrutura Pesada ou Talento de topo. Penalize 'computadores' e futilidades.",
+        key_activities: "TESE DO BLOCO (Atividades): Avaliar a operação core e contínua do modelo. Penalize gestão rotineira que toda empresa faz. Exija foco nas engrenagens ativas da Proposta de Valor.",
+        key_partners: "TESE DO BLOCO (Parcerias): Avaliar se reduzem riscos reais ou evitam a compra de Recursos Chave. Penalize ecossistemas ilusórios que não trazem poder tático ou trazem dependência letal no curto prazo.",
+        cost_structure: "TESE DO BLOCO (Custos): Avaliar os maiores drenos financeiros de forma crua. Penalize esquecimento e subestimação do CAC (Custo de Aquisição de Cliente) ou da manutenção da equipa. A conta tem que fechar com a Receita."
+      };
+      const rule = blockRules[targetBlockId] || "";
+
       return `Você é um Analista de Mercado Sênior. O usuário está elaborando o módulo "${block.title}" do seu Business Model Canvas B2B/Startup.
 
 CONTEÚDO DO MÓDULO "${block.title}" A SER AVALIADO:
@@ -593,6 +607,8 @@ Contexto do resto do negócio (USE APENAS PARA REFERÊNCIA, NÃO AVALIE ESTES OU
 ${summary}
 
 AVISO CRÍTICO E REGRA DE OURO: A sua nota e os seus comentários devem ser EXCLUSIVAMENTE sobre o conteúdo inserido no módulo "${block.title}". Não faça uma avaliação geral do negócio. Avalie apenas se as premissas DENTRO deste bloco são maduras, específicas e mitigam riscos.
+
+${rule ? "DIRETRIZ DE AVALIAÇÃO OBRIGATÓRIA PARA ESTE BLOCO:\\n" + rule + "\\nAplique esta perspetiva de Canvas sem piedade." : ""}
 
 Perspetiva de Análise para este Módulo isolado:
 1. Os itens inseridos AQUI são excessivamente genéricos (ex: "vendas", "marketing") ou altamente específicos? Penalize severamente o genérico.
