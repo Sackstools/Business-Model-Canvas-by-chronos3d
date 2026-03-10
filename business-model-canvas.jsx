@@ -584,24 +584,28 @@ function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, bu
     if (currentMode === "analyze_block" && targetBlockId) {
       const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
       const items = canvasData[block.id] || [];
-      return `Você é um Analista de Mercado Sênior e Estrategista. O usuário está elaborando o bloco "${block.title}" do seu Business Model Canvas B2B/Startup.
-Os itens atuais neste bloco são:
-${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(vazio)'}
+      return `Você é um Analista de Mercado Sênior. O usuário está elaborando o módulo "${block.title}" do seu Business Model Canvas B2B/Startup.
 
-Contexto do ecossistema do negócio (demais blocos) para cruzar validação de mercado:
+CONTEÚDO DO MÓDULO "${block.title}" A SER AVALIADO:
+${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(MÓDULO VAZIO - DEVE RECEBER NOTA ZERO IMEDIATAMENTE)'}
+
+Contexto do resto do negócio (USE APENAS PARA REFERÊNCIA, NÃO AVALIE ESTES OUTROS MÓDULOS):
 ${summary}
 
-Objetivo: Analise a aderência prática, a tangibilidade de mercado e a coerência estratégica individual EXCLUSIVAMENTE deste bloco "${block.title}". Perspetiva exigida:
-1) Está excessivamente genérico para o mercado real ("produto de qualidade")?
-2) Esse bloco introduz fricção operacional, risco de viabilidade ou gargalo no funil?
-3) As assunções listadas alinham com a proposta de valor e a maturidade dos custos/receitas para viabilizar escala sem colapsar o modelo?
-Retorne um JSON com:
+AVISO CRÍTICO E REGRA DE OURO: A sua nota e os seus comentários devem ser EXCLUSIVAMENTE sobre o conteúdo inserido no módulo "${block.title}". Não faça uma avaliação geral do negócio. Avalie apenas se as premissas DENTRO deste bloco são maduras, específicas e mitigam riscos.
+
+Perspetiva de Análise para este Módulo isolado:
+1. Os itens inseridos AQUI são excessivamente genéricos (ex: "vendas", "marketing") ou altamente específicos? Penalize severamente o genérico.
+2. Os itens AQUI introduzem um passivo, fricção ou gargalo que não se sustenta no mercado?
+3. Há falta de alinhamento DENTRO deste bloco com a realidade da sua própria categoria corporativa/startup?
+
+Retorne um JSON estruturado:
 {
-  "_nota_modulo": número de 0 a 100 julgando especificidade gerencial e risco (vago = 0),
-  "_analise": "análise brutalmente franca da maturidade desse bloco, apontando riscos inerentes no mundo prático e validações úteis",
-  "_pontos_atencao": ["risco financeiro/operacional X", "item Y é excessivamente frouxo..."] (se muito fundamentado = array vazio)
+  "_nota_modulo": número de 0 a 100 julgando EXCLUSIVAMENTE a qualidade técnica e o detalhe deste bloco (se estiver vazio, nota é 0),
+  "_analise": "análise brutalmente franca, focada 100% nos itens que estão dentro deste módulo. Critique os itens listados sem piedade se forem genéricos, elogie caso sejam geniais e maduros.",
+  "_pontos_atencao": ["crítica específica a um item deste bloco", "risco do item X..."] (ou array vazio se perfeito)
 }
-IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUNCA use quebras de linha reais dentro dos textos (use \\n se precisar separar parágrafos) e NUNCA utilize aspas duplas para destacar coisas no texto, use sempre apóstrofos (' ').`;
+IMPORTANTE: Responda APENAS com JSON válido. NUNCA use aspas duplas fora do padrão JSON, use apóstrofos (' '). Use \\n para quebras de linha nas strings.`;
     }
 
     if (currentMode === "brainstorm_block" && targetBlockId) {
@@ -674,7 +678,7 @@ ${summary}`;
         body: JSON.stringify({
           model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: generatePrompt(overrideTarget, overrideMode) }],
-          temperature: 0.0,
+          temperature: (currentMode === "analyze_block") ? 0.2 : 0.0,
           max_tokens: 4000,
           response_format: { type: "json_object" }
         }),
