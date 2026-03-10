@@ -88,6 +88,18 @@ const INITIAL_STATE = Object.fromEntries(
   CANVAS_BLOCKS.map((b) => [b.id, []])
 );
 
+const BLOCK_RULES = {
+  customer_segments: "TESE DO BLOCO (Segmentos): Avaliar se os nichos estão bem definidos com foco na dor. O mercado rejeita a falácia de 'vender para todos'. Exija uma hiper-segmentação e penalize alvos genéricos.",
+  value_propositions: "TESE DO BLOCO (Proposta): Avaliar qual a dor aguda e tangível resolvida. Não avalie funcionalidades técnicas do produto, mas sim o ganho real e impacto gerado (status, redução de custo, tempo).",
+  channels: "TESE DO BLOCO (Canais): Avaliar viabilidade de aquisição vs custo. Como a empresa chega aos clientes na prática? Penalize 'redes sociais' ou 'marketing digital' se for vago e sem estratégia acionável.",
+  customer_relationships: "TESE DO BLOCO (Relacionamento): Avaliar engajamento e retenção. Existe um custo de servir que faz sentido (ex: suporte dedicado humano num ticket baixo não é viável)? Penalize omissões estratégicas.",
+  revenue_streams: "TESE DO BLOCO (Receitas): Avaliar como se monetiza na prática. Focar se o modelo (assinatura, venda unitária, freemium) é coerente com os Segmentos e se permite crescimento sem bater no teto.",
+  key_resources: "TESE DO BLOCO (Recursos): Avaliar ativos imprescindíveis sem os quais o negócio morre na praia. Foco em Propriedade Intelectual, Infraestrutura Pesada ou Talento de topo. Penalize 'computadores' e futilidades.",
+  key_activities: "TESE DO BLOCO (Atividades): Avaliar a operação core e contínua do modelo. Penalize gestão rotineira que toda empresa faz. Exija foco nas engrenagens ativas da Proposta de Valor.",
+  key_partners: "TESE DO BLOCO (Parcerias): Avaliar se reduzem riscos reais ou evitam a compra de Recursos Chave. Penalize ecossistemas ilusórios que não trazem poder tático ou trazem dependência letal no curto prazo.",
+  cost_structure: "TESE DO BLOCO (Custos): Avaliar os maiores drenos financeiros de forma crua. Penalize esquecimento e subestimação do CAC (Custo de Aquisição de Cliente) ou da manutenção da equipa. A conta tem que fechar com a Receita."
+};
+
 function NoteCard({ note, onDelete, onEdit, accent }) {
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(note.text);
@@ -584,54 +596,48 @@ function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, bu
     if (currentMode === "analyze_block" && targetBlockId) {
       const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
       const items = canvasData[block.id] || [];
+      const rule = BLOCK_RULES[targetBlockId] || "";
 
-      const blockRules = {
-        customer_segments: "TESE DO BLOCO (Segmentos): Avaliar se os nichos estão bem definidos com foco na dor. O mercado rejeita a falácia de 'vender para todos'. Exija uma hiper-segmentação e penalize alvos genéricos.",
-        value_propositions: "TESE DO BLOCO (Proposta): Avaliar qual a dor aguda e tangível resolvida. Não avalie funcionalidades técnicas do produto, mas sim o ganho real e impacto gerado (status, redução de custo, tempo).",
-        channels: "TESE DO BLOCO (Canais): Avaliar viabilidade de aquisição vs custo. Como a empresa chega aos clientes na prática? Penalize 'redes sociais' ou 'marketing digital' se for vago e sem estratégia acionável.",
-        customer_relationships: "TESE DO BLOCO (Relacionamento): Avaliar engajamento e retenção. Existe um custo de servir que faz sentido (ex: suporte dedicado humano num ticket baixo não é viável)? Penalize omissões estratégicas.",
-        revenue_streams: "TESE DO BLOCO (Receitas): Avaliar como se monetiza na prática. Focar se o modelo (assinatura, venda unitária, freemium) é coerente com os Segmentos e se permite crescimento sem bater no teto.",
-        key_resources: "TESE DO BLOCO (Recursos): Avaliar ativos imprescindíveis sem os quais o negócio morre na praia. Foco em Propriedade Intelectual, Infraestrutura Pesada ou Talento de topo. Penalize 'computadores' e futilidades.",
-        key_activities: "TESE DO BLOCO (Atividades): Avaliar a operação core e contínua do modelo. Penalize gestão rotineira que toda empresa faz. Exija foco nas engrenagens ativas da Proposta de Valor.",
-        key_partners: "TESE DO BLOCO (Parcerias): Avaliar se reduzem riscos reais ou evitam a compra de Recursos Chave. Penalize ecossistemas ilusórios que não trazem poder tático ou trazem dependência letal no curto prazo.",
-        cost_structure: "TESE DO BLOCO (Custos): Avaliar os maiores drenos financeiros de forma crua. Penalize esquecimento e subestimação do CAC (Custo de Aquisição de Cliente) ou da manutenção da equipa. A conta tem que fechar com a Receita."
-      };
-      const rule = blockRules[targetBlockId] || "";
-
-      return `Você é um Analista de Mercado Sênior. O usuário está elaborando o módulo "${block.title}" do seu Business Model Canvas B2B/Startup.
+      return `Você é um Analista de Mercado Sênior especializado em Business Model Canvas. O usuário está elaborando o módulo "${block.title}" do negócio.
 
 CONTEÚDO DO MÓDULO "${block.title}" A SER AVALIADO:
 ${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(MÓDULO VAZIO - DEVE RECEBER NOTA ZERO IMEDIATAMENTE)'}
 
-Contexto do resto do negócio (USE APENAS PARA REFERÊNCIA, NÃO AVALIE ESTES OUTROS MÓDULOS):
+Contexto do resto do negócio (USE APENAS PARA REFERÊNCIA):
 ${summary}
 
-AVISO CRÍTICO E REGRA DE OURO: A sua nota e os seus comentários devem ser EXCLUSIVAMENTE sobre o conteúdo inserido no módulo "${block.title}". Não faça uma avaliação geral do negócio. Avalie apenas se as premissas DENTRO deste bloco são maduras, específicas e mitigam riscos.
+AVISO CRÍTICO E REGRA DE OURO: A sua nota deve ser EXCLUSIVAMENTE sobre o conteúdo inserido no módulo "${block.title}".
 
-${rule ? "DIRETRIZ DE AVALIAÇÃO OBRIGATÓRIA PARA ESTE BLOCO:\\n" + rule + "\\nAplique esta perspetiva de Canvas sem piedade." : ""}
+${rule ? "DIRETRIZ METODOLÓGICA OBRIGATÓRIA PARA ESTE BLOCO:\\n" + rule : ""}
 
-Perspetiva de Análise para este Módulo isolado:
-1. Os itens inseridos AQUI são excessivamente genéricos (ex: "vendas", "marketing") ou altamente específicos? Penalize severamente o genérico.
+Perspetiva de Análise:
+1. Os itens inseridos AQUI são excessivamente genéricos? Penalize severamente o genérico.
 2. Os itens AQUI introduzem um passivo, fricção ou gargalo que não se sustenta no mercado?
-3. Há falta de alinhamento DENTRO deste bloco com a realidade da sua própria categoria corporativa/startup?
+3. Há falta de alinhamento com a finalidade estratégica deste bloco específico no modelo Canvas?
 
 Retorne um JSON estruturado:
 {
-  "_nota_modulo": número de 0 a 100 julgando EXCLUSIVAMENTE a qualidade técnica e o detalhe deste bloco (se estiver vazio, nota é 0),
-  "_analise": "análise brutalmente franca, focada 100% nos itens que estão dentro deste módulo. Critique os itens listados sem piedade se forem genéricos, elogie caso sejam geniais e maduros.",
-  "_pontos_atencao": ["crítica específica a um item deste bloco", "risco do item X..."] (ou array vazio se perfeito)
+  "_nota_modulo": número de 0 a 100 julgando EXCLUSIVAMENTE a qualidade técnica deste bloco (se vazio = 0),
+  "_analise": "análise brutalmente franca, focada 100% no conteúdo acima.",
+  "_pontos_atencao": ["crítica específica"]
 }
-IMPORTANTE: Responda APENAS com JSON válido. NUNCA use aspas duplas fora do padrão JSON, use apóstrofos (' '). Use \\n para quebras de linha nas strings.`;
+IMPORTANTE: Responda APENAS com JSON válido. NUNCA use aspas duplas no seu texto criado, utilize sempre apóstrofos (' '). Use \\n para quebras de linha nas strings.`;
     }
 
     if (currentMode === "brainstorm_block" && targetBlockId) {
       const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
-      return `Você é um co-fundador visionário e estrategista focado em ideação para um Business Model Canvas.
-Contexto do canvas atual:
+      const rule = BLOCK_RULES[targetBlockId] || "";
+
+      return `Você é um co-fundador visionário e estrategista focado em ideação técnica e mercadológica para um Business Model Canvas.
+Contexto do canvas atual para alinhamento:
 ${summary}
 
-Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}". Não repita exatamente o que já está lá. Sugira 3 a 5 itens práticos e aplicáveis ao modelo.
-REGRA CRÍTICA DE TOM DE VOZ: Suas respostas devem ser 100% OBJETIVAS, utilizando jargão estratégico de alta gestão B2B, indústria avançada e hardware corporativo (Deep Tech, Manufatura). Vá direto "à dor" nas operações, SLAs, patentes ou custos. Evite adjetivos emocionais vazios.
+Objetivo: Gere ideias novas, criativas e MUITO ESPECÍFICAS para preencher o bloco "${block.title}".
+
+${rule ? "ESTRATÉGIA DE CONCEPÇÃO PARA ESTE BLOCO:\\n" + rule : ""}
+
+REGRA CRÍTICA DE TOM DE VOZ: Respostas 100% OBJETIVAS com jargão estratégico de alta gestão B2B e indústria. Sem adjetivos emocionais vazios. Foco em estrutura, SLAs, patentes ou diferenciais competitivos reais.
+
 Retorne um JSON com esta estrutura:
 {
   "${block.id}": [
@@ -640,13 +646,13 @@ Retorne um JSON com esta estrutura:
     "✨ Exemplo de ideia prática 3"
   ]
 }
-IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Prefira sugestões acionáveis e diretas. NUNCA use quebras de linha reais no texto gerado, e NUNCA utilize aspas duplas no seu texto criado!`;
+IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUNCA use aspas duplas no seu texto criado, utilize sempre apóstrofos (' ').`;
     }
 
     const modeInstructions = {
       fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar. REGRA CRÍTICA: As sugestões devem ser EXTREMAMENTE OBJETIVAS, maduras e alinhadas ao mundo corporativo B2B ou Indústria Avançada (ex: Deep-Tech, Hardware). Evite jargões emocionais. Use vocabulário técnico focado em otimização de custos e operações industriais. Retorne um objeto JSON onde as chaves são IDs dos blocos e os valores arrays de strings. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
       validate: `Você é um auditor rigoroso avaliando com a ótica prática de investidores de mercado. Analise a COERÊNCIA e VIABILIDADE ECONÔMICA dos blocos:
-1. PRODUCT-MARKET FIT (FIT_MERCADO): A Proposta de Valor atende de forma tangível as dores concretas do Segmento? A singularidade é defendável contra a concorrência?
+1. PRODUCT-MARKET FIT (FIT_MERCADO): A Proposta de Valor atende de forma tangível as dores concretas do Segmento? A singularidade é defendível contra a concorrência?
 2. VIABILIDADE FINANCEIRA: O fluxo de Receitas é escalável? A Estrutura de Custos reflete os Canais (Custo de Aquisição - CAC) e os Recursos de modo que a conta feche no longo prazo?
 3. RISCOS OPERACIONAIS: As Parcerias mitigam a falta de Recursos? Há risco pendente em um único fornecedor, tech ou canal? As Atividades-Chave são realistas ou subestimadas face aos custos?
 4. ITENS VAGOS: Puna assunções românticas ou infantis que não se sustentariam num MVP real do mercado.
@@ -685,7 +691,7 @@ ${summary}`;
       const currentMode = overrideMode || mode;
       const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
       const isAnalysis = currentMode === "analyze_block";
-      const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
+      const response = await fetchRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { 
            "Content-Type": "application/json",
@@ -759,20 +765,24 @@ ${summary}`;
       });
       const currentStatusJson = JSON.stringify(currentStatus, null, 2);
 
+      const applicableRules = affectedBlocks.map(id => BLOCK_RULES[id] || "").filter(r => r).join('\\n');
+
       const bName = businessName || 'Negócio Corporativo';
       const prompt = `Você é um Auditor e Corretor de Estratégias B2B para a empresa/projeto "${bName}".
 Um erro de validação foi encontrado no Canvas:
 Problema Detetado: ${prob.descricao}
 
-Os blocos afetados estão no seguinte estado atual (array de strings):
+Os blocos afetados estão neste estado:
 ${currentStatusJson}
 
-A SUA TAREFA É FORNECER UMA SUGESTÃO PRÁTICA DE SOLUÇÃO.
-Explique em 1 ou 2 parágrafos curtos e objetivos o que o utilizador deve alterar, excluir ou melhorar nos itens acima para resolver este problema de vez. Seja muito direto, indique qual a frase problemática e qual deve ser o seu substituto ideal no contexto corporativo B2B.
+DIRETRIZES TÉCNICAS DOS BLOCOS ENVOLVIDOS:
+${applicableRules}
 
-Retorne APENAS um objeto JSON. A chave do JSON deve ser exatamente "solucao" e o valor deve ser o texto da sua sugestão. NADA DE TEXTO ADICIONAL FORA DO JSON. Formato esperado: {"solucao": "O seu texto..."}`;
+TAREFA: Forneça uma SUGESTÃO PRÁTICA DE SOLUÇÃO. Explique em 1 ou 2 parágrafos o que o utilizador deve alterar, excluir ou melhorar nos itens para resolver o problema. Seja muito direto, indique qual a frase problemática e apresente o substituto ideal.
 
-      const resp = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
+Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
+
+      const resp = await fetchRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
