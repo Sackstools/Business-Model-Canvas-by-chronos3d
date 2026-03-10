@@ -584,19 +584,22 @@ function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, bu
     if (currentMode === "analyze_block" && targetBlockId) {
       const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
       const items = canvasData[block.id] || [];
-      return `Você é um especialista em estratégia de negócios. O usuário está preenchendo o bloco "${block.title}" do seu Business Model Canvas.
+      return `Você é um Analista de Mercado Sênior e Estrategista. O usuário está elaborando o bloco "${block.title}" do seu Business Model Canvas B2B/Startup.
 Os itens atuais neste bloco são:
 ${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(vazio)'}
 
-Contexto do canvas inteiro (para garantir legitimidade perante o resto do negócio):
+Contexto do ecossistema do negócio (demais blocos) para cruzar validação de mercado:
 ${summary}
 
-Objetivo: Analise a coerência e legitimidade individual APENAS do bloco "${block.title}", focando se os itens fazem sentido, se são realistas e bem alinhados com o resto do canvas.
+Objetivo: Analise a aderência prática, a tangibilidade de mercado e a coerência estratégica individual EXCLUSIVAMENTE deste bloco "${block.title}". Perspetiva exigida:
+1) Está excessivamente genérico para o mercado real ("produto de qualidade")?
+2) Esse bloco introduz fricção operacional, risco de viabilidade ou gargalo no funil?
+3) As assunções listadas alinham com a proposta de valor e a maturidade dos custos/receitas para viabilizar escala sem colapsar o modelo?
 Retorne um JSON com:
 {
-  "_nota_modulo": número de 0 a 100 indicando a qualidade,
-  "_analise": "análise detalhada focada na aderência à função do bloco e viabilidade",
-  "_pontos_atencao": ["ponto 1", "ponto 2..."] (se nenhum, array vazio)
+  "_nota_modulo": número de 0 a 100 julgando especificidade gerencial e risco (vago = 0),
+  "_analise": "análise brutalmente franca da maturidade desse bloco, apontando riscos inerentes no mundo prático e validações úteis",
+  "_pontos_atencao": ["risco financeiro/operacional X", "item Y é excessivamente frouxo..."] (se muito fundamentado = array vazio)
 }
 IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUNCA use quebras de linha reais dentro dos textos (use \\n se precisar separar parágrafos) e NUNCA utilize aspas duplas para destacar coisas no texto, use sempre apóstrofos (' ').`;
     }
@@ -622,7 +625,14 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. Pre
 
     const modeInstructions = {
       fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar. REGRA CRÍTICA: As sugestões devem ser EXTREMAMENTE OBJETIVAS, maduras e alinhadas ao mundo corporativo B2B ou Indústria Avançada (ex: Deep-Tech, Hardware). Evite jargões emocionais. Use vocabulário técnico focado em otimização de custos e operações industriais. Retorne um objeto JSON onde as chaves são IDs dos blocos e os valores arrays de strings. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
-      validate: `Você é um auditor rigoroso de Business Model Canvas. Analise a COERÊNCIA INTERNA entre todos os blocos. Verifique: 1)INCOERÊNCIAS entre proposta de valor e segmentos, canais inadequados, receitas incompatíveis; 2)ITENS VAGOS genéricos demais; 3)CONTRADIÇÕES entre blocos; 4)LACUNAS LÓGICAS; 5)DUPLICATAS. REGRA CRÍTICA: Se o Canvas for altamente técnico, coeso e sem falhas graves, VOCÊ DEVE DAR NOTA 100 e retornar a lista de problemas vazia, não invente falsas inconsistências. Retorne JSON: {"_nota":0-100,"_resumo":"diagnóstico","_problemas":[{"tipo":"INCOERÊNCIA|VAGO|CONTRADIÇÃO|LACUNA|DUPLICATA","gravidade":"alta|media|baixa","blocos":["id1","id2"],"descricao":"explicação"}],"_pontos_fortes":["ponto1"]}. IDs: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
+      validate: `Você é um auditor rigoroso avaliando com a ótica prática de investidores de mercado. Analise a COERÊNCIA e VIABILIDADE ECONÔMICA dos blocos:
+1. PRODUCT-MARKET FIT (FIT_MERCADO): A Proposta de Valor atende de forma tangível as dores concretas do Segmento? A singularidade é defendável contra a concorrência?
+2. VIABILIDADE FINANCEIRA: O fluxo de Receitas é escalável? A Estrutura de Custos reflete os Canais (Custo de Aquisição - CAC) e os Recursos de modo que a conta feche no longo prazo?
+3. RISCOS OPERACIONAIS: As Parcerias mitigam a falta de Recursos? Há risco pendente em um único fornecedor, tech ou canal? As Atividades-Chave são realistas ou subestimadas face aos custos?
+4. ITENS VAGOS: Puna assunções românticas ou infantis que não se sustentariam num MVP real do mercado.
+
+REGRA CRÍTICA: Se o Canvas for profissional, fundamentado, coerente, não crie defeitos irreais; atribua nota 100 e devolva o array.
+Retorne JSON: {"_nota":0-100,"_resumo":"diagnóstico executivo da viabilidade da tese","_problemas":[{"tipo":"FIT_MERCADO|FINANCEIRO|OPERACIONAL|VAGO|CONTRADIÇÃO","gravidade":"alta|media|baixa","blocos":["id1"],"descricao":"explicação franca baseada em métricas e riscos práticos da vida real"}],"_pontos_fortes":["vantagem estrutural detetada"]}. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
     };
 
     return `Você é um especialista em estratégia de negócios analisando um Business Model Canvas.
