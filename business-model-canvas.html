@@ -1035,7 +1035,14 @@
       }).join('\n');
 
       const instructions = {
-        fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos com conteúdo, sugira 1 item complementar. REGRA CRÍTICA: As sugestões devem ser EXTREMAMENTE OBJETIVAS, maduras e alinhadas ao mundo corporativo B2B, Inovação ou Indústria Avançada. Evite jargões emocionais. Use vocabulário técnico e estratégico focado em otimização de operações, retenção ou barreiras de entrada. Retorne JSON onde chaves são IDs dos blocos e valores são arrays de strings. IDs: ${BLOCKS.map(b => b.id).join(', ')}.`,
+      const instructions = {
+        fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos com conteúdo, sugira 1 item complementar. 
+
+REGRA CRÍTICA DE QUALIDADE: As sugestões devem seguir rigorosamente as TESES DE BLOCO abaixo para cada módulo:
+${Object.entries(BLOCK_RULES).map(([id, rule]) => `- ${id}: ${rule}`).join('\\n')}
+
+ESTILO DE RESPOSTA: Use vocabulário técnico, maduro e estratégico (B2B, Deep Tech, Indústria). Evite termos genéricos ou emocionais. Vá direto ao ponto (ex: SLAs, CAC, LTV, Patentes, Diferenciais de escala).
+Retorne JSON onde chaves são IDs dos blocos e valores são arrays de strings. IDs: ${BLOCKS.map(b => b.id).join(', ')}.`,
         validate: `Você é um auditor rigoroso de Business Model Canvas avaliando com a ótica prática e realista de investidores e analistas de mercado. Analise a COERÊNCIA e VIABILIDADE ECONÔMICA dos blocos:
 1. PRODUCT-MARKET FIT E DIFERENCIAÇÃO: A Proposta de Valor atende de forma tangível as dores concretas e urgentes do Segmento de Clientes? A singularidade é defendável?
 2. VIABILIDADE FINANCEIRA E CAPTURA DE VALOR: O fluxo de Receitas é compatível com os Segmentos? A Estrutura de Custos reflete perfeitamente as Atividades, os Canais (custo de aquisição CAC vs LTV) e os Recursos de modo sustentável?

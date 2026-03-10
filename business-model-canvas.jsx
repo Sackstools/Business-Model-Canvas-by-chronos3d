@@ -650,7 +650,13 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUN
     }
 
     const modeInstructions = {
-      fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar. REGRA CRÍTICA: As sugestões devem ser EXTREMAMENTE OBJETIVAS, maduras e alinhadas ao mundo corporativo B2B ou Indústria Avançada (ex: Deep-Tech, Hardware). Evite jargões emocionais. Use vocabulário técnico focado em otimização de custos e operações industriais. Retorne um objeto JSON onde as chaves são IDs dos blocos e os valores arrays de strings. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
+      fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar. 
+
+REGRA CRÍTICA DE QUALIDADE: As sugestões devem seguir RIGOROSAMENTE as TESES DE BLOCO abaixo para cada módulo, respeitando a linha de análise técnica e mercadológica:
+${Object.entries(BLOCK_RULES).map(([id, rule]) => `- ${id}: ${rule}`).join('\\n')}
+
+ESTILO DE RESPOSTA: Use vocabulário técnico, maduro e estratégico focado em otimização de custos, viabilidade e diferenciação real (B2B, Deep Tech, Indústria). Evite preenchimento genérico.
+Retorne um objeto JSON onde as chaves são IDs dos blocos e os valores arrays de strings. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
       validate: `Você é um auditor rigoroso avaliando com a ótica prática de investidores de mercado. Analise a COERÊNCIA e VIABILIDADE ECONÔMICA dos blocos:
 1. PRODUCT-MARKET FIT (FIT_MERCADO): A Proposta de Valor atende de forma tangível as dores concretas do Segmento? A singularidade é defendível contra a concorrência?
 2. VIABILIDADE FINANCEIRA: O fluxo de Receitas é escalável? A Estrutura de Custos reflete os Canais (Custo de Aquisição - CAC) e os Recursos de modo que a conta feche no longo prazo?
