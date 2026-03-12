@@ -634,6 +634,8 @@
       { id: "revenue_streams", title: "Fontes de Receita", icon: "💰", hint: "Como a empresa ganha dinheiro com cada segmento?", examples: "Ex: Venda de ativo, Assinatura mensal, Aluguel, Licenciamento, Taxa de corretagem.", color: "#C8E6C9", accent: "#4E8A50" },
     ];
 
+const BLOCKS_MAP = new Map(BLOCKS.map(b => [b.id, b]));
+
     const GRID_POS = [
       { col: "1", row: "1 / 3" },
       { col: "2", row: "1" },
@@ -1168,7 +1170,7 @@ ${summary}`;
       area.className = 'suggestions-area';
 
       Object.entries(suggestions).forEach(([blockId, items]) => {
-        const block = BLOCKS.find(b => b.id === blockId);
+        const block = BLOCKS_MAP.get(blockId);
         if (!block || !items?.length) return;
         const section = document.createElement('div');
         section.innerHTML = `<div class="suggestion-block-title" style="color:${block.accent}">${block.icon} ${block.title}</div>`;
@@ -1243,7 +1245,7 @@ ${summary}`;
           let html = `<div style="margin-top:4px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${gravColors[grav]};margin-bottom:6px">${gravIcons[grav]} Gravidade ${gravLabels[grav]} (${byGrav[grav].length})</div>`;
           byGrav[grav].forEach(prob => {
             const blocoNames = (prob.blocos || []).map(id => {
-              const bl = BLOCKS.find(b => b.id === id);
+              const bl = BLOCKS_MAP.get(id);
               return bl ? bl.icon + ' ' + bl.title : id;
             }).join(' ↔ ');
             const tipoIcon = tipoIcons[prob.tipo] || '⚠️';
@@ -1270,7 +1272,7 @@ ${summary}`;
     async function analyzeBlock(blockId) {
       toggleAI(true);
       const content = document.getElementById('aiContent');
-      const block = BLOCKS.find(b => b.id === blockId);
+      const block = BLOCKS_MAP.get(blockId);
       content.innerHTML = `<div style="padding:20px;text-align:center;color:#8a8278;font-size:12px;">⏳ Analisando ${block.title}...</div>`;
       const btn = document.getElementById('runBtn');
       btn.disabled = true;
@@ -1362,7 +1364,7 @@ IMPORTANTE: Responda APENAS com JSON válido. NUNCA utilize aspas duplas no seu 
     async function brainstormBlock(blockId) {
       toggleAI(true);
       const content = document.getElementById('aiContent');
-      const block = BLOCKS.find(b => b.id === blockId);
+      const block = BLOCKS_MAP.get(blockId);
       content.innerHTML = `<div style="padding:20px;text-align:center;color:#8a8278;font-size:12px;">⏳ Gerando ideias para ${block.title}...</div>`;
       const btn = document.getElementById('runBtn');
       btn.disabled = true;
