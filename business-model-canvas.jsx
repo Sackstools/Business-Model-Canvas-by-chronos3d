@@ -33,7 +33,8 @@ const CANVAS_BLOCKS = [
     title: "Proposta de Valor",
     icon: "💎",
     hint: "Qual problema você ajuda a resolver? Qual valor entregamos?",
-    examples: "Ex: Status/Marca, Preço acessível, Redução de risco, Conveniência.",
+    examples:
+      "Ex: Status/Marca, Preço acessível, Redução de risco, Conveniência.",
     color: "#F8E6D0",
     accent: "#D4915E",
   },
@@ -51,7 +52,8 @@ const CANVAS_BLOCKS = [
     title: "Canais",
     icon: "🚀",
     hint: "Por onde o cliente conhece, compra e recebe o valor?",
-    examples: "Ex: Redes sociais, Loja física, App próprio, Distribuidores parceiros.",
+    examples:
+      "Ex: Redes sociais, Loja física, App próprio, Distribuidores parceiros.",
     color: "#FCE4EC",
     accent: "#C9616B",
   },
@@ -60,7 +62,8 @@ const CANVAS_BLOCKS = [
     title: "Segmentos de Clientes",
     icon: "👥",
     hint: "Para quem você está criando valor?",
-    examples: "Ex: Mulheres de 25-40 anos, Empresas B2B de SaaS, Jovens gamers.",
+    examples:
+      "Ex: Mulheres de 25-40 anos, Empresas B2B de SaaS, Jovens gamers.",
     color: "#FFF9C4",
     accent: "#C9A825",
   },
@@ -93,15 +96,24 @@ const CANVAS_BLOCKS_MAP = Object.fromEntries(
 );
 
 const BLOCK_RULES = {
-  customer_segments: "TESE: Segmentos de Clientes definem os diferentes grupos de pessoas ou organizações que a empresa visa alcançar. É o 'PARA QUEM'. O preenchimento eficiente exige hiper-segmentação: evite o 'público geral'. Foque em nichos com dores idênticas e comportamentos de compra semelhantes.",
-  value_propositions: "TESE: Proposta de Valor é o motivo pelo qual clientes escolhem sua empresa em vez de outra. Responde 'O QUÊ' você resolve. Deve focar no ganho (tempo, dinheiro, status) ou na redução de dor, e não em listas técnicas de funcionalidades.",
-  channels: "TESE: Canais descrevem como a empresa comunica e alcança seus segmentos para entregar o valor. Cobrem fases de Conhecimento, Avaliação, Compra e Entrega. Devem ser analisados pelo custo de aquisição e conveniência para o cliente.",
-  customer_relationships: "TESE: Relacionamento define o tipo de vínculo que a empresa estabelece com cada segmento. Foca em 'COMO' reter clientes. Deve ser coerente com o ticket médio: tickets baixos exigem automação, tickets altos exigem proximidade humana.",
-  revenue_streams: "TESE: Fontes de Receita representam o dinheiro gerado. É o 'QUANTO'. Foque na precificação (fixa vs dinâmica) e no modelo (assinatura, venda única, licenciamento). Deve refletir o valor percebido pelo segmento.",
-  key_resources: "TESE: Recursos Principais são os ativos fundamentais para o modelo rodar. Físicos, intelectuais, humanos ou financeiros. Liste apenas o que é CRÍTICO. Se o modelo morre sem o recurso, ele é Chave. Caso contrário, ignore.",
-  key_activities: "TESE: Atividades-Chave são as ações mais importantes que a empresa deve realizar. Produção, Resolução de Problemas ou Plataforma. Devem estar diretamente ligadas à entrega da Proposta de Valor.",
-  key_partners: "TESE: Parcerias-Chave são a rede de fornecedores e parceiros que fazem o modelo funcionar. Alianças estratégicas, coopetição ou joint-ventures. Servem para otimizar o modelo, reduzir riscos ou adquirir recursos que você não quer produzir internamente.",
-  cost_structure: "TESE: Estrutura de Custos descreve todos os custos operacionais. Identifique se o negócio é 'Direcionado pelo Custo' (baixo custo) ou 'Direcionado pelo Valor' (premium). Liste os gatilhos que mais drenam caixa."
+  customer_segments:
+    "TESE: Segmentos de Clientes definem os diferentes grupos de pessoas ou organizações que a empresa visa alcançar. É o 'PARA QUEM'. O preenchimento eficiente exige hiper-segmentação: evite o 'público geral'. Foque em nichos com dores idênticas e comportamentos de compra semelhantes.",
+  value_propositions:
+    "TESE: Proposta de Valor é o motivo pelo qual clientes escolhem sua empresa em vez de outra. Responde 'O QUÊ' você resolve. Deve focar no ganho (tempo, dinheiro, status) ou na redução de dor, e não em listas técnicas de funcionalidades.",
+  channels:
+    "TESE: Canais descrevem como a empresa comunica e alcança seus segmentos para entregar o valor. Cobrem fases de Conhecimento, Avaliação, Compra e Entrega. Devem ser analisados pelo custo de aquisição e conveniência para o cliente.",
+  customer_relationships:
+    "TESE: Relacionamento define o tipo de vínculo que a empresa estabelece com cada segmento. Foca em 'COMO' reter clientes. Deve ser coerente com o ticket médio: tickets baixos exigem automação, tickets altos exigem proximidade humana.",
+  revenue_streams:
+    "TESE: Fontes de Receita representam o dinheiro gerado. É o 'QUANTO'. Foque na precificação (fixa vs dinâmica) e no modelo (assinatura, venda única, licenciamento). Deve refletir o valor percebido pelo segmento.",
+  key_resources:
+    "TESE: Recursos Principais são os ativos fundamentais para o modelo rodar. Físicos, intelectuais, humanos ou financeiros. Liste apenas o que é CRÍTICO. Se o modelo morre sem o recurso, ele é Chave. Caso contrário, ignore.",
+  key_activities:
+    "TESE: Atividades-Chave são as ações mais importantes que a empresa deve realizar. Produção, Resolução de Problemas ou Plataforma. Devem estar diretamente ligadas à entrega da Proposta de Valor.",
+  key_partners:
+    "TESE: Parcerias-Chave são a rede de fornecedores e parceiros que fazem o modelo funcionar. Alianças estratégicas, coopetição ou joint-ventures. Servem para otimizar o modelo, reduzir riscos ou adquirir recursos que você não quer produzir internamente.",
+  cost_structure:
+    "TESE: Estrutura de Custos descreve todos os custos operacionais. Identifique se o negócio é 'Direcionado pelo Custo' (baixo custo) ou 'Direcionado pelo Valor' (premium). Liste os gatilhos que mais drenam caixa.",
 };
 
 function NoteCard({ note, onDelete, onEdit, accent }) {
@@ -212,9 +224,17 @@ function NoteCard({ note, onDelete, onEdit, accent }) {
   );
 }
 
-const NOTE_COLORS = ['#ffffff', '#fef08a', '#bfdbfe', '#bbf7d0', '#fbcfe8'];
+const NOTE_COLORS = ["#ffffff", "#fef08a", "#bfdbfe", "#bbf7d0", "#fbcfe8"];
 
-function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrainstorm }) {
+function CanvasBlock({
+  block,
+  notes,
+  onAdd,
+  onDelete,
+  onEdit,
+  onAnalyze,
+  onBrainstorm,
+}) {
   const [inputVal, setInputVal] = useState("");
   const [showTooltip, setShowTooltip] = useState(false);
   const [showBrainstormTooltip, setShowBrainstormTooltip] = useState(false);
@@ -252,7 +272,15 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
           flexShrink: 0,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0, width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            minWidth: 0,
+            width: "100%",
+          }}
+        >
           <span style={{ fontSize: "16px", flexShrink: 0 }}>{block.icon}</span>
           <h3
             title={block.title}
@@ -274,8 +302,23 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
           </h3>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "2px", flexShrink: 0, width: "100%" }}>
-          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "2px",
+            flexShrink: 0,
+            width: "100%",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <button
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
@@ -314,7 +357,9 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
                   boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
                 }}
               >
-                <strong>Essencial:</strong> {block.hint}<br /><br />
+                <strong>Essencial:</strong> {block.hint}
+                <br />
+                <br />
                 <em>{block.examples}</em>
                 <div
                   style={{
@@ -346,12 +391,33 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
             {notes.length}
           </span>
 
-          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <button
               onClick={() => onBrainstorm && onBrainstorm(block.id)}
-              style={{ background: "none", border: "none", fontSize: "14px", cursor: "pointer", padding: "2px", borderRadius: "4px", transition: "background 0.15s", marginLeft: 0 }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.08)"; setShowBrainstormTooltip(true); }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "none"; setShowBrainstormTooltip(false); }}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: "14px",
+                cursor: "pointer",
+                padding: "2px",
+                borderRadius: "4px",
+                transition: "background 0.15s",
+                marginLeft: 0,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(0,0,0,0.08)";
+                setShowBrainstormTooltip(true);
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "none";
+                setShowBrainstormTooltip(false);
+              }}
             >
               💡
             </button>
@@ -393,7 +459,13 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
             )}
           </div>
 
-          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <button
               onClick={() => onAnalyze && onAnalyze(block.id)}
               style={{
@@ -406,8 +478,14 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
                 transition: "background 0.15s",
                 marginLeft: 0,
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.08)"; setShowAnalyzeTooltip(true); }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "none"; setShowAnalyzeTooltip(false); }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(0,0,0,0.08)";
+                setShowAnalyzeTooltip(true);
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "none";
+                setShowAnalyzeTooltip(false);
+              }}
             >
               🧠
             </button>
@@ -483,9 +561,19 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
               fontFamily: "'DM Sans', sans-serif",
             }}
           >
-            <span style={{ fontWeight: 700, fontSize: "13px" }}>{block.hint}</span>
-            <span style={{ fontSize: "11px", opacity: 0.8 }}>{block.examples}</span>
-            <span style={{ marginTop: "12px", fontStyle: "italic", fontSize: "11px" }}>
+            <span style={{ fontWeight: 700, fontSize: "13px" }}>
+              {block.hint}
+            </span>
+            <span style={{ fontSize: "11px", opacity: 0.8 }}>
+              {block.examples}
+            </span>
+            <span
+              style={{
+                marginTop: "12px",
+                fontStyle: "italic",
+                fontSize: "11px",
+              }}
+            >
               Clique em + para adicionar itens
             </span>
           </div>
@@ -494,17 +582,27 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
 
       <div style={{ display: "flex", flexDirection: "column", flexShrink: 0 }}>
         <div style={{ display: "flex", gap: "6px", marginBottom: "6px" }}>
-          {NOTE_COLORS.map(c => (
+          {NOTE_COLORS.map((c) => (
             <div
               key={c}
               onClick={() => setSelectedColor(c)}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.transform = "scale(1.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.transform = "scale(1)")
+              }
               style={{
-                width: "14px", height: "14px", borderRadius: "50%", cursor: "pointer",
-                background: c, border: c === '#ffffff' ? "1px solid #ccc" : "1px solid transparent",
+                width: "14px",
+                height: "14px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                background: c,
+                border:
+                  c === "#ffffff" ? "1px solid #ccc" : "1px solid transparent",
                 boxShadow: selectedColor === c ? "0 0 0 2px #3a3228" : "none",
-                transition: "all 0.15s", boxSizing: "border-box"
+                transition: "all 0.15s",
+                boxSizing: "border-box",
               }}
             />
           ))}
@@ -548,7 +646,9 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
               fontWeight: 700,
               transition: "transform 0.15s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "scale(1.1)")
+            }
             onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             title="Adicionar item"
           >
@@ -560,17 +660,28 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
   );
 }
 
-function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, businessPitch, analyzeTarget, onClearAnalyzeTarget, brainstormTarget, onClearBrainstormTarget }) {
+const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
+  if (retries < 1) {
+    throw new Error("\`retries\` must be a positive number.");
+  }
+  for (let i = 0; i < retries; i++) {
+    const resp = await fetch(url, options);
+    if (resp.status === 429 && i < retries - 1) {
+      // Log para consola apenas para acompanhamento técnico invisível
+      console.warn(`429 Rate Limit. Tentativa automática ${i + 1}/${retries} em ${delay}ms...`);
+      await new Promise((r) => setTimeout(r, delay * (i + 1)));
+      continue;
+    }
+    return resp;
+  }
+};
+
+function useAILogic({ canvasData, businessName, businessPitch, analyzeTarget, brainstormTarget, onClearAnalyzeTarget, onClearBrainstormTarget, onAutoFix }) {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
   const [mode, setMode] = useState("fill_gaps");
   const [apiKey, setApiKey] = useState("");
-
-  const modes = [
-    { id: "fill_gaps", label: "Preencher", icon: "🧩", desc: "Sugere itens para blocos vazios" },
-    { id: "validate", label: "Validar", icon: "🔍", desc: "Verifica coerência e erros" },
-  ];
 
   useEffect(() => {
     if (analyzeTarget) {
@@ -609,7 +720,7 @@ CONTEXTO DO NEGÓCIO:
 ${summary}
 
 CONTEÚDO PARA ANÁLISE:
-${items.length > 0 ? items.map((i) => "- " + i.text).join('\\n') : '(VAZIO - INSPECIONE ESTA LACUNA)'}
+${items.length > 0 ? items.map((i) => "- " + i.text).join("\\n") : "(VAZIO - INSPECIONE ESTA LACUNA)"}
 
 SUA TAREFA:
 1. Avalie tecnicamente os itens listados. Se estiver vazio, explique por que este bloco é vital.
@@ -658,7 +769,9 @@ IMPORTANTE: Responda APENAS com JSON válido. Tudo em português brasileiro. NUN
       fill_gaps: `Analise o Business Model Canvas abaixo e sugira 2-3 itens para cada bloco VAZIO. Para blocos que já possuem conteúdo, sugira 1 item complementar. 
 
 REGRA CRÍTICA DE QUALIDADE: As sugestões devem seguir RIGOROSAMENTE as TESES DE BLOCO abaixo para cada módulo, respeitando a linha de análise técnica e mercadológica:
-${Object.entries(BLOCK_RULES).map(([id, rule]) => `- ${id}: ${rule}`).join('\\n')}
+${Object.entries(BLOCK_RULES)
+  .map(([id, rule]) => `- ${id}: ${rule}`)
+  .join("\\n")}
 
 ESTILO DE RESPOSTA: Use vocabulário técnico, maduro e estratégico focado em otimização de custos, viabilidade e diferenciação real (B2B, Deep Tech, Indústria). Evite preenchimento genérico.
 Retorne um objeto JSON onde as chaves são IDs dos blocos e os valores arrays de strings. IDs válidos: ${CANVAS_BLOCKS.map((b) => b.id).join(", ")}.`,
@@ -681,19 +794,6 @@ Canvas Atual:
 ${summary}`;
   };
 
-  const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
-    for (let i = 0; i < retries; i++) {
-      const resp = await fetch(url, options);
-      if (resp.status === 429 && i < retries - 1) {
-        // Log para consola apenas para acompanhamento técnico invisível
-        console.warn(`429 Rate Limit. Tentativa automática ${i + 1}/${retries} em ${delay}ms...`);
-        await new Promise((r) => setTimeout(r, delay * (i + 1)));
-        continue;
-      }
-      return resp;
-    }
-  };
-
   const runAI = async (overrideTarget = null, overrideMode = null) => {
     setLoading(true);
     setError(null);
@@ -702,7 +802,7 @@ ${summary}`;
       const currentMode = overrideMode || mode;
       const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
       const isAnalysis = currentMode === "analyze_block";
-      const response = await fetchRetry("https://api.groq.com/openai/v1/chat/completions", {
+      const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { 
            "Content-Type": "application/json",
@@ -720,36 +820,51 @@ ${summary}`;
         const errData = await response.json().catch(() => ({}));
         let errMsg = errData?.error?.message || `Erro HTTP ${response.status}`;
         if (response.status === 429) {
-           throw new Error("Você atingiu o limite de perguntas rápidas da Groq API. Aguarde alguns segundos.");
+          throw new Error(
+            "Você atingiu o limite de perguntas rápidas da Groq API. Aguarde alguns segundos.",
+          );
         }
         throw new Error("Erro na Groq API: " + errMsg);
       }
       const data = await response.json();
       const text = data.choices[0].message.content || "";
       let cleaned = text.replace(/\`\`\`json|\`\`\`/gi, "").trim();
-      const primeiraChaveta = cleaned.indexOf('{');
-      const ultimaChaveta = cleaned.lastIndexOf('}');
+      const primeiraChaveta = cleaned.indexOf("{");
+      const ultimaChaveta = cleaned.lastIndexOf("}");
       let jsonSeguro = cleaned;
-      if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
-          jsonSeguro = cleaned.substring(primeiraChaveta, ultimaChaveta + 1);
+      if (
+        primeiraChaveta !== -1 &&
+        ultimaChaveta !== -1 &&
+        ultimaChaveta > primeiraChaveta
+      ) {
+        jsonSeguro = cleaned.substring(primeiraChaveta, ultimaChaveta + 1);
       }
-      jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
+      jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, " ");
 
       let parsed;
       try {
         parsed = JSON.parse(jsonSeguro);
       } catch (e) {
-        let ultraClean = jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2");
+        let ultraClean = jsonSeguro.replace(
+          /([^{ \[\:,])"([^}\],:])/g,
+          "$1'$2",
+        );
         parsed = JSON.parse(ultraClean);
       }
 
       if (isAnalysis) {
-        setSuggestions({ _isBlockAnalysis: true, target: targetBlockId, data: parsed });
+        setSuggestions({
+          _isBlockAnalysis: true,
+          target: targetBlockId,
+          data: parsed,
+        });
       } else {
         setSuggestions(parsed);
       }
     } catch (err) {
-      setError("Falha na requisição de IA. Verifique sua chave e tente novamente.");
+      setError(
+        "Falha na requisição de IA. Verifique sua chave e tente novamente.",
+      );
       console.error(err);
     }
     setLoading(false);
@@ -759,7 +874,9 @@ ${summary}`;
 
   const fixValidationProblem = async (btn, b64Prob, probObj) => {
     if (!apiKey) {
-      alert("Por favor, insira a sua chave Groq Llama 3 para usar a resolução automática.");
+      alert(
+        "Por favor, insira a sua chave Groq Llama 3 para usar a resolução automática.",
+      );
       return;
     }
 
@@ -768,17 +885,23 @@ ${summary}`;
 
     try {
       const prob = probObj || JSON.parse(decodeURIComponent(atob(b64Prob)));
-      const affectedBlocks = (prob.blocos && prob.blocos.length) ? prob.blocos : CANVAS_BLOCKS.map(b => b.id);
-      
+      const affectedBlocks =
+        prob.blocos?.length
+          ? prob.blocos
+          : Array.from(CANVAS_BLOCKS_MAP.keys());
+
       const currentStatus = {};
-      affectedBlocks.forEach(bId => {
-        currentStatus[bId] = (canvasData[bId] || []).map(i => i.text);
+      affectedBlocks.forEach((bId) => {
+        currentStatus[bId] = (canvasData[bId] || []).map((i) => i.text);
       });
       const currentStatusJson = JSON.stringify(currentStatus, null, 2);
 
-      const applicableRules = affectedBlocks.map(id => BLOCK_RULES[id] || "").filter(r => r).join('\\n');
+      const applicableRules = affectedBlocks
+        .map((id) => BLOCK_RULES[id] || "")
+        .filter((r) => r)
+        .join("\\n");
 
-      const bName = businessName || 'Negócio Corporativo';
+      const bName = businessName || "Negócio Corporativo";
       const prompt = `Você é um Auditor e Corretor de Estratégias B2B para a empresa/projeto "${bName}".
 Um erro de validação foi encontrado no Canvas:
 Problema Detetado: ${prob.descricao}
@@ -793,7 +916,7 @@ TAREFA: Forneça uma SUGESTÃO PRÁTICA DE SOLUÇÃO. Explique em 1 ou 2 parágr
 
 Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
 
-      const resp = await fetchRetry("https://api.groq.com/openai/v1/chat/completions", {
+      const resp = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -812,24 +935,32 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
 
       const data = await resp.json();
       const text = data.choices[0].message.content || "{}";
-      
-      const primeiraChaveta = text.indexOf('{');
-      const ultimaChaveta = text.lastIndexOf('}');
+
+      const primeiraChaveta = text.indexOf("{");
+      const ultimaChaveta = text.lastIndexOf("}");
       let jsonSeguro = text;
-      if (primeiraChaveta !== -1 && ultimaChaveta !== -1 && ultimaChaveta > primeiraChaveta) {
+      if (
+        primeiraChaveta !== -1 &&
+        ultimaChaveta !== -1 &&
+        ultimaChaveta > primeiraChaveta
+      ) {
         jsonSeguro = text.substring(primeiraChaveta, ultimaChaveta + 1);
       }
-      jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, ' ');
-      
+      jsonSeguro = jsonSeguro.replace(/[\u0000-\u001F]+/g, " ");
+
       let parsed;
       try {
         parsed = JSON.parse(jsonSeguro);
-      } catch(e) {
-        parsed = JSON.parse(jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2"));
+      } catch (e) {
+        parsed = JSON.parse(
+          jsonSeguro.replace(/([^{ \[\:,])"([^}\],:])/g, "$1'$2"),
+        );
       }
 
-      const solText = parsed.solucao || "Nenhuma sugestão encontrada. Reveja o bloco manualmente.";
-      
+      const solText =
+        parsed.solucao ||
+        "Nenhuma sugestão encontrada. Reveja o bloco manualmente.";
+
       btn.textContent = `💡 Ver Solução`;
       btn.dataset.solucao = solText;
       btn.style.background = "#0d47a133";
@@ -837,34 +968,35 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
       btn.style.color = "#82b1ff";
       btn.disabled = false;
       btn.onclick = null;
-      
+
       btn.onmouseover = (e) => {
-        e.currentTarget.style.background = '#0d47a155';
-        let tt = document.getElementById('global-sol-tooltip');
+        e.currentTarget.style.background = "#0d47a155";
+        let tt = document.getElementById("global-sol-tooltip");
         if (!tt) {
-          tt = document.createElement('div');
-          tt.id = 'global-sol-tooltip';
-          tt.style.cssText = 'position:fixed;background:#1e1b18;border:1px solid #0d47a1;padding:12px;border-radius:6px;color:#e8e0d4;box-shadow:0 8px 16px rgba(0,0,0,0.8);z-index:999999;font-weight:normal;text-align:left;white-space:normal;line-height:1.4;pointer-events:none;font-size:13px;width:280px;';
+          tt = document.createElement("div");
+          tt.id = "global-sol-tooltip";
+          tt.style.cssText =
+            "position:fixed;background:#1e1b18;border:1px solid #0d47a1;padding:12px;border-radius:6px;color:#e8e0d4;box-shadow:0 8px 16px rgba(0,0,0,0.8);z-index:999999;font-weight:normal;text-align:left;white-space:normal;line-height:1.4;pointer-events:none;font-size:13px;width:280px;";
           document.body.appendChild(tt);
         }
         tt.textContent = e.currentTarget.dataset.solucao;
-        tt.style.display = 'block';
-        
+        tt.style.display = "block";
+
         const rect = e.currentTarget.getBoundingClientRect();
         let topPos = rect.top - tt.offsetHeight - 10;
-        if (topPos < 10) topPos = rect.bottom + 10; 
-        
-        tt.style.top = topPos + 'px';
-        
+        if (topPos < 10) topPos = rect.bottom + 10;
+
+        tt.style.top = topPos + "px";
+
         let leftPos = rect.left - 290;
-        if (leftPos < 10) leftPos = rect.left + rect.width / 2 - 140; 
-        
-        tt.style.left = leftPos + 'px';
+        if (leftPos < 10) leftPos = rect.left + rect.width / 2 - 140;
+
+        tt.style.left = leftPos + "px";
       };
       btn.onmouseout = (e) => {
-        e.currentTarget.style.background = '#0d47a133';
-        const tt = document.getElementById('global-sol-tooltip');
-        if (tt) tt.style.display = 'none';
+        e.currentTarget.style.background = "#0d47a133";
+        const tt = document.getElementById("global-sol-tooltip");
+        if (tt) tt.style.display = "none";
       };
     } catch (err) {
       console.error(err);
@@ -872,6 +1004,238 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
       btn.disabled = false;
     }
   };
+
+  return {
+    loading,
+    suggestions,
+    error,
+    mode,
+    setMode,
+    apiKey,
+    setApiKey,
+    runAI,
+    fixValidationProblem
+  };
+}
+
+function AIValidationResult({ suggestions, fixValidationProblem }) {
+  if (!suggestions || suggestions._nota === undefined) return null;
+  return (
+    <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+      {/* Score */}
+      <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D"}44` }}>
+        <div style={{ fontSize: "36px", fontWeight: 900, color: suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D", fontFamily: "'Playfair Display', serif", lineHeight: 1 }}>{suggestions._nota}</div>
+        <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D", marginTop: "2px" }}>{suggestions._nota >= 80 ? "Excelente" : suggestions._nota >= 60 ? "Bom" : suggestions._nota >= 40 ? "Regular" : "Crítico"}</div>
+        <div style={{ fontSize: "11px", color: "#8a8278", marginTop: "6px", lineHeight: 1.4 }}>{suggestions._resumo}</div>
+      </div>
+      {/* Pontos fortes */}
+      {suggestions._pontos_fortes?.length > 0 && (
+        <div>
+          <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#4E8A50", marginBottom: "6px" }}>✅ Pontos Fortes</div>
+          {suggestions._pontos_fortes.map((p, i) => (
+            <div key={i} style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "6px 8px", marginBottom: "4px", borderLeft: "3px solid #4E8A50" }}>{p}</div>
+          ))}
+        </div>
+      )}
+      {/* Problemas */}
+      {suggestions._problemas?.length > 0 && ["alta", "media", "baixa"].map(grav => {
+        const probs = suggestions._problemas.filter(p => (p.gravidade || "media") === grav);
+        if (!probs.length) return null;
+        const gravColor = { alta: "#BF5B3D", media: "#C9A825", baixa: "#6C8EBF" }[grav];
+        const gravIcon = { alta: "🔴", media: "🟡", baixa: "🔵" }[grav];
+        const gravLabel = { alta: "ALTA", media: "MÉDIA", baixa: "BAIXA" }[grav];
+        return (
+          <div key={grav}>
+            <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: gravColor, marginBottom: "6px" }}>{gravIcon} Gravidade {gravLabel} ({probs.length})</div>
+            {probs.map((prob, i) => {
+              const blocoNames = (prob.blocos || []).map(id => { const bl = CANVAS_BLOCKS.find(b => b.id === id); return bl ? bl.icon + " " + bl.title : id; }).join(" ↔ ");
+              const b64Prob = btoa(encodeURIComponent(JSON.stringify(prob)));
+              return (
+                <div key={i} style={{ background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: `3px solid ${gravColor}` }}>
+                  <div style={{ fontSize: "10px", color: gravColor, fontWeight: 700, letterSpacing: "0.05em", marginBottom: "3px" }}>⚠️ {prob.tipo}</div>
+                  <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4 }}>{prob.descricao}</div>
+                  {blocoNames && <div style={{ fontSize: "10px", color: "#8a8278", marginTop: "4px", marginBottom: "6px" }}>📍 {blocoNames}</div>}
+                  <button
+                    onClick={(e) => {
+                      const btn = e.currentTarget;
+                      fixValidationProblem(btn, b64Prob, prob);
+                    }}
+                    style={{ position: "relative", background: `${gravColor}22`, color: gravColor, border: `1px solid ${gravColor}66`, borderRadius: "4px", fontSize: "10px", padding: "4px 8px", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", display: "block", width: "100%" }}
+                    onMouseOver={(e) => { e.currentTarget.style.background = `${gravColor}44`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='block'; }}
+                    onMouseOut={(e) => { e.currentTarget.style.background = `${gravColor}22`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='none'; }}
+                  >
+                    💡 Sugerir Solução
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AIAnalysisResult({ suggestions }) {
+  if (!suggestions || !suggestions._isBlockAnalysis) return null;
+
+  const block = CANVAS_BLOCKS.find(b => b.id === suggestions.target);
+  const data = suggestions.data;
+  const notaColor = data._nota_modulo >= 80 ? "#4E8A50" : data._nota_modulo >= 50 ? "#C9A825" : "#BF5B3D";
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+      <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${block.accent}44` }}>
+        <div style={{ fontSize: "11px", textTransform: "uppercase", color: block.accent, fontWeight: 700, marginBottom: "8px", letterSpacing: "0.1em" }}>{block.icon} {block.title}</div>
+        <div style={{ fontSize: "36px", fontWeight: 900, color: notaColor, fontFamily: "'DM Sans', sans-serif", lineHeight: 1 }}>{data._nota_modulo}</div>
+        <div style={{ fontSize: "9px", color: "#8a8278", marginTop: "4px" }}>SCORE DE EFICIÊNCIA</div>
+      </div>
+
+      <div style={{ background: "#2a2722", borderRadius: "6px", padding: "12px", borderTop: "1px solid #3a3228" }}>
+        <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#8a8278", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🔍 Análise do Mentor</div>
+        <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.5 }}>
+          {data._analise}
+        </div>
+      </div>
+
+      {data._instrucao && (
+        <div style={{ background: "#1e3a5f22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #3b82f6", borderTop: "1px solid #1e3a5f44" }}>
+          <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#60a5fa", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🎓 Teoria e Método</div>
+          <div style={{ fontSize: "12px", color: "#93c5fd", lineHeight: 1.5 }}>
+            {data._instrucao}
+          </div>
+        </div>
+      )}
+
+      {data._dica_mestre && (
+        <div style={{ background: "#D4915E22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #D4915E", borderTop: "1px solid #D4915E44" }}>
+          <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#D4915E", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🏆 Dica de Mestre</div>
+          <div style={{ fontSize: "12px", color: "#e8e0d4", lineHeight: 1.5, fontStyle: "italic" }}>
+            "{data._dica_mestre}"
+          </div>
+        </div>
+      )}
+
+      {data._pontos_atencao?.length > 0 && (
+        <div>
+          <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#BF5B3D", fontWeight: 800, marginBottom: "8px", letterSpacing: "0.1em" }}>⚠️ Pontos de Atenção</div>
+          {data._pontos_atencao.map((p, i) => (
+            <div key={i} style={{ fontSize: "11px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: "3px solid #BF5B3D" }}>{p}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AISuggestionResult({ suggestions, onApplySuggestions }) {
+  if (!suggestions || suggestions._isBlockAnalysis || suggestions._nota !== undefined) return null;
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        minHeight: 0,
+      }}
+    >
+      {Object.entries(suggestions).map(([blockId, items]) => {
+        const block = CANVAS_BLOCKS.find((b) => b.id === blockId);
+        if (!block || !items?.length) return null;
+        return (
+          <div key={blockId}>
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                color: block.accent,
+                marginBottom: "4px",
+              }}
+            >
+              {block.icon} {block.title}
+            </div>
+            {items.map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "6px",
+                  marginBottom: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    fontSize: "12px",
+                    color: "#ccc5b9",
+                    lineHeight: 1.4,
+                    background: "#2a2722",
+                    borderRadius: "4px",
+                    padding: "6px 8px",
+                  }}
+                >
+                  {item}
+                </div>
+                <button
+                  onClick={() => onApplySuggestions(blockId, item)}
+                  style={{
+                    background: block.accent + "33",
+                    border: "none",
+                    borderRadius: "4px",
+                    color: block.accent,
+                    cursor: "pointer",
+                    fontSize: "11px",
+                    padding: "4px 8px",
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                  title="Adicionar ao canvas"
+                >
+                  + Usar
+                </button>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, businessPitch, analyzeTarget, onClearAnalyzeTarget, brainstormTarget, onClearBrainstormTarget }) {
+  const {
+    loading,
+    suggestions,
+    error,
+    mode,
+    setMode,
+    apiKey,
+    setApiKey,
+    runAI,
+    fixValidationProblem
+  } = useAILogic({
+    canvasData,
+    businessName,
+    businessPitch,
+    analyzeTarget,
+    brainstormTarget,
+    onClearAnalyzeTarget,
+    onClearBrainstormTarget,
+    onAutoFix
+  });
+
+  const modes = [
+    { id: "fill_gaps", label: "Preencher", icon: "🧩", desc: "Sugere itens para blocos vazios" },
+    { id: "validate", label: "Validar", icon: "🔍", desc: "Verifica coerência e erros" },
+  ];
 
   return (
     <div
@@ -888,7 +1252,14 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
         fontFamily: "'DM Sans', sans-serif",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          flexShrink: 0,
+        }}
+      >
         <div
           style={{
             width: "28px",
@@ -903,21 +1274,69 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
         >
           🧠
         </div>
-        <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, letterSpacing: "0.05em" }}>
+        <h3
+          style={{
+            margin: 0,
+            fontSize: "14px",
+            fontWeight: 700,
+            letterSpacing: "0.05em",
+          }}
+        >
           ESTRATEGISTA IA
         </h3>
       </div>
 
       <div style={{ flexShrink: 0 }}>
-        <label style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#8a8278", fontWeight: 600, display: "block", marginBottom: "4px" }}>🔑 Chave Llama 3 (Groq)</label>
-        <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="gsk_..." style={{ width: "100%", background: "#2a2722", border: "1px solid #3a3228", borderRadius: "4px", padding: "6px 8px", color: "#e8e0d4", fontSize: "11px", fontFamily: "'DM Sans', sans-serif", outline: "none", marginBottom: "8px" }} onFocus={(e) => e.target.style.borderColor = "#D4915E"} onBlur={(e) => e.target.style.borderColor = "#3a3228"} />
+        <label
+          style={{
+            fontSize: "10px",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            color: "#8a8278",
+            fontWeight: 600,
+            display: "block",
+            marginBottom: "4px",
+          }}
+        >
+          🔑 Chave Llama 3 (Groq)
+        </label>
+        <input
+          type="password"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="gsk_..."
+          style={{
+            width: "100%",
+            background: "#2a2722",
+            border: "1px solid #3a3228",
+            borderRadius: "4px",
+            padding: "6px 8px",
+            color: "#e8e0d4",
+            fontSize: "11px",
+            fontFamily: "'DM Sans', sans-serif",
+            outline: "none",
+            marginBottom: "8px",
+          }}
+          onFocus={(e) => (e.target.style.borderColor = "#D4915E")}
+          onBlur={(e) => (e.target.style.borderColor = "#3a3228")}
+        />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px", flexShrink: 0 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "6px",
+          flexShrink: 0,
+        }}
+      >
         {modes.map((m) => (
           <button
             key={m.id}
-            onClick={() => { setMode(m.id); if (onClearAnalyzeTarget) onClearAnalyzeTarget(); }}
+            onClick={() => {
+              setMode(m.id);
+              if (onClearAnalyzeTarget) onClearAnalyzeTarget();
+            }}
             style={{
               background: mode === m.id ? "#3a3228" : "#2a2722",
               border: mode === m.id ? "1px solid #D4915E" : "1px solid #3a3228",
@@ -933,8 +1352,16 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
               color: mode === m.id ? "#e8e0d4" : "#8a8278",
             }}
           >
-            <div style={{ fontSize: "14px", marginBottom: "0px" }}>{m.icon}</div>
-            <div style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.04em" }}>
+            <div style={{ fontSize: "14px", marginBottom: "0px" }}>
+              {m.icon}
+            </div>
+            <div
+              style={{
+                fontSize: "10px",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+              }}
+            >
               {m.label}
             </div>
           </button>
@@ -945,7 +1372,9 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
         onClick={runAI}
         disabled={loading}
         style={{
-          background: loading ? "#3a3228" : "linear-gradient(135deg, #D4915E 0%, #BF5B3D 100%)",
+          background: loading
+            ? "#3a3228"
+            : "linear-gradient(135deg, #D4915E 0%, #BF5B3D 100%)",
           color: "#fff",
           border: "none",
           borderRadius: "6px",
@@ -960,7 +1389,11 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
           fontFamily: "'DM Sans', sans-serif",
         }}
       >
-        {loading ? "⏳ Analisando..." : (mode === "analyze_block" ? "⏳ Carregando..." : `Executar ${modes.find((m) => m.id === mode)?.label || 'Análise'}`)}
+        {loading
+          ? "⏳ Analisando..."
+          : mode === "analyze_block"
+            ? "⏳ Carregando..."
+            : `Executar ${modes.find((m) => m.id === mode)?.label || "Análise"}`}
       </button>
 
       {error && (
@@ -1178,7 +1611,8 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
             padding: "20px",
           }}
         >
-          Selecione um modo e clique em Executar para obter insights estratégicos com IA.
+          Selecione um modo e clique em Executar para obter insights
+          estratégicos com IA.
         </div>
       )}
     </div>
@@ -1194,14 +1628,17 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
             nomeNegocio: businessName,
             criadoEm: new Date().toISOString(),
             canvas: Object.fromEntries(
-              CANVAS_BLOCKS.map((b) => [b.id, (canvasData[b.id] || []).map((n) => n.text)])
+              CANVAS_BLOCKS.map((b) => [
+                b.id,
+                (canvasData[b.id] || []).map((n) => n.text),
+              ]),
             ),
           },
           null,
-          2
+          2,
         ),
       ],
-      { type: "application/json" }
+      { type: "application/json" },
     );
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1222,13 +1659,22 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
           const newData = {};
           CANVAS_BLOCKS.forEach((b) => {
             const arr = obj.canvas[b.id] || [];
-            newData[b.id] = arr.map((txt, idx) => ({ id: Date.now() + idx, text: txt, color: "#ffffff" }));
+            newData[b.id] = arr.map((txt, idx) => ({
+              id: Date.now() + idx,
+              text: txt,
+              color: "#ffffff",
+            }));
           });
           if (onImportJSON) {
-            onImportJSON({ canvasData: newData, businessName: obj.nomeNegocio });
+            onImportJSON({
+              canvasData: newData,
+              businessName: obj.nomeNegocio,
+            });
           }
         } else {
-          alert("O arquivo selecionado não parece ser um modelo de Canvas válido.");
+          alert(
+            "O arquivo selecionado não parece ser um modelo de Canvas válido.",
+          );
         }
       } catch (err) {
         alert("Erro ao ler formato do ficheiro: " + err.message);
@@ -1256,7 +1702,11 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
     if (aiSidebar) aiSidebar.style.display = "none";
     if (tplButtons) tplButtons.style.display = "none";
     if (headerRight) headerRight.style.display = "none";
-    document.querySelectorAll(".block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn").forEach((b) => (b.style.display = "none"));
+    document
+      .querySelectorAll(
+        ".block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn",
+      )
+      .forEach((b) => (b.style.display = "none"));
 
     let titleText = null;
     if (businessInput) {
@@ -1318,7 +1768,11 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
       if (aiSidebar) aiSidebar.style.display = aiSidebarDisplay;
       if (tplButtons) tplButtons.style.display = "flex";
       if (headerRight) headerRight.style.display = "flex";
-      document.querySelectorAll(".block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn").forEach((b) => (b.style.display = ""));
+      document
+        .querySelectorAll(
+          ".block-info-btn, .block-ai-btn, .add-btn, .delete-btn, .color-btn",
+        )
+        .forEach((b) => (b.style.display = ""));
 
       if (titleText) titleText.remove();
       if (businessInput) businessInput.style.display = "";
@@ -1375,7 +1829,12 @@ function ExportPanel({ canvasData, businessName, onImportJSON }) {
         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#3a3228")}
       >
         <span>📂</span>
-        <input type="file" accept=".json" style={{ display: "none" }} onChange={handleImportJSON} />
+        <input
+          type="file"
+          accept=".json"
+          style={{ display: "none" }}
+          onChange={handleImportJSON}
+        />
       </label>
 
       <button
@@ -1407,49 +1866,130 @@ const TEMPLATES = {
     name: "Equip. Manufatura Aditiva",
     data: {
       key_partners: [
-        { id: 1, text: "Fornecedores multinacionais de pó de metal/polímeros certificados" },
-        { id: 2, text: "Gigantes de software de simulação CAD/CAE (Parcerias Tecnológicas)" },
-        { id: 3, text: "Distribuidores regionais certificados de maquinário pesado B2B" },
+        {
+          id: 1,
+          text: "Fornecedores multinacionais de pó de metal/polímeros certificados",
+        },
+        {
+          id: 2,
+          text: "Gigantes de software de simulação CAD/CAE (Parcerias Tecnológicas)",
+        },
+        {
+          id: 3,
+          text: "Distribuidores regionais certificados de maquinário pesado B2B",
+        },
       ],
       key_activities: [
-        { id: 4, text: "P&D contínuo de sistemas de fusão a laser em cama de pó (LPBF)" },
-        { id: 5, text: "Manufatura e aferição de precisão de sistemas robóticos e calibração" },
-        { id: 6, text: "Desenvolvimento do motor de software proprietário de fatiamento" },
+        {
+          id: 4,
+          text: "P&D contínuo de sistemas de fusão a laser em cama de pó (LPBF)",
+        },
+        {
+          id: 5,
+          text: "Manufatura e aferição de precisão de sistemas robóticos e calibração",
+        },
+        {
+          id: 6,
+          text: "Desenvolvimento do motor de software proprietário de fatiamento",
+        },
       ],
       key_resources: [
-        { id: 7, text: "Propriedade intelectual blindada: Patentes de hardware de fusão e algoritmos" },
-        { id: 8, text: "Doutorados de topo em metalurgia e engenharia de precisão mecatrônica" },
-        { id: 9, text: "Instalações industriais limpas para montagem e certificação" },
+        {
+          id: 7,
+          text: "Propriedade intelectual blindada: Patentes de hardware de fusão e algoritmos",
+        },
+        {
+          id: 8,
+          text: "Doutorados de topo em metalurgia e engenharia de precisão mecatrônica",
+        },
+        {
+          id: 9,
+          text: "Instalações industriais limpas para montagem e certificação",
+        },
       ],
       value_propositions: [
-        { id: 10, text: "Impressão geométrica impossível por métodos subtrativos (CNC) otimizando aero-peças" },
-        { id: 11, text: "Redução radical (+80%) do desperdício de ligas de titânio vs usinagem" },
-        { id: 12, text: "Produção local sob demanda, destruindo custos e tempos de cadeia global" },
+        {
+          id: 10,
+          text: "Impressão geométrica impossível por métodos subtrativos (CNC) otimizando aero-peças",
+        },
+        {
+          id: 11,
+          text: "Redução radical (+80%) do desperdício de ligas de titânio vs usinagem",
+        },
+        {
+          id: 12,
+          text: "Produção local sob demanda, destruindo custos e tempos de cadeia global",
+        },
       ],
       customer_relationships: [
-        { id: 13, text: "Assistência Premium On-Site atrelada a SLAs estritos para tempo de atividade (Uptime)" },
-        { id: 14, text: "Consultoria técnica pré-venda e testes de conceito destrutivos (PoC)" },
-        { id: 15, text: "Ecossistema fechado co-desenvolvendo parâmetros de material com o cliente" },
+        {
+          id: 13,
+          text: "Assistência Premium On-Site atrelada a SLAs estritos para tempo de atividade (Uptime)",
+        },
+        {
+          id: 14,
+          text: "Consultoria técnica pré-venda e testes de conceito destrutivos (PoC)",
+        },
+        {
+          id: 15,
+          text: "Ecossistema fechado co-desenvolvendo parâmetros de material com o cliente",
+        },
       ],
       channels: [
-        { id: 16, text: "Força de vendas técnica (KAMs com background em Engenharia)" },
-        { id: 17, text: "Demonstrações ao vivo nas maiores cimeiras mundiais da indústria (ex: Formnext)" },
-        { id: 18, text: "Showrooms regionais e C.D. com engenheiros residentes" },
+        {
+          id: 16,
+          text: "Força de vendas técnica (KAMs com background em Engenharia)",
+        },
+        {
+          id: 17,
+          text: "Demonstrações ao vivo nas maiores cimeiras mundiais da indústria (ex: Formnext)",
+        },
+        {
+          id: 18,
+          text: "Showrooms regionais e C.D. com engenheiros residentes",
+        },
       ],
       customer_segments: [
-        { id: 19, text: "OEMs Automotivos e Aeroespaciais que necessitam de redução drástica de peso" },
-        { id: 20, text: "Laboratórios de saúde fabricando próteses médicas e implantes ortopédicos" },
-        { id: 21, text: "Birôs de usinagem avançada B2B prestando serviços de tooling de alta precisão" },
+        {
+          id: 19,
+          text: "OEMs Automotivos e Aeroespaciais que necessitam de redução drástica de peso",
+        },
+        {
+          id: 20,
+          text: "Laboratórios de saúde fabricando próteses médicas e implantes ortopédicos",
+        },
+        {
+          id: 21,
+          text: "Birôs de usinagem avançada B2B prestando serviços de tooling de alta precisão",
+        },
       ],
       cost_structure: [
-        { id: 22, text: "Custos irrecuperáveis altíssimos com prototipagem, testes de materiais e stress" },
-        { id: 23, text: "Elevado Custo Produtivo (COGS): lasers e guias óticas de topo" },
-        { id: 24, text: "Folha salarial de luxo: Vendedores técnicos B2B globais e engenheiros seniores" },
+        {
+          id: 22,
+          text: "Custos irrecuperáveis altíssimos com prototipagem, testes de materiais e stress",
+        },
+        {
+          id: 23,
+          text: "Elevado Custo Produtivo (COGS): lasers e guias óticas de topo",
+        },
+        {
+          id: 24,
+          text: "Folha salarial de luxo: Vendedores técnicos B2B globais e engenheiros seniores",
+        },
       ],
       revenue_streams: [
-        { id: 25, text: "Faturamento com Venda Isolada das máquinas de capital (Alto Ticket CapEx)" },
-        { id: 26, text: "Receita recorrente milionária via consumíveis cativos (pós com chip antipirataria)" },
-        { id: 27, text: "Licenciamento de software e contratos rentáveis de manutenção preditiva (SLA)" },
+        {
+          id: 25,
+          text: "Faturamento com Venda Isolada das máquinas de capital (Alto Ticket CapEx)",
+        },
+        {
+          id: 26,
+          text: "Receita recorrente milionária via consumíveis cativos (pós com chip antipirataria)",
+        },
+        {
+          id: 27,
+          text: "Licenciamento de software e contratos rentáveis de manutenção preditiva (SLA)",
+        },
       ],
     },
   },
@@ -1457,49 +1997,106 @@ const TEMPLATES = {
     name: "E-Commerce",
     data: {
       key_partners: [
-        { id: 101, text: "Fornecedores certificados de matéria-prima orgânica" },
+        {
+          id: 101,
+          text: "Fornecedores certificados de matéria-prima orgânica",
+        },
         { id: 102, text: "Transportadoras com soluções 'Last-Mile' verdes" },
         { id: 103, text: "Micro-Influenciadores embaixadores da marca" },
       ],
       key_activities: [
-        { id: 104, text: "Curadoria detalhada e design de novas coleções sazonais" },
+        {
+          id: 104,
+          text: "Curadoria detalhada e design de novas coleções sazonais",
+        },
         { id: 105, text: "Gestão rígida de estoque e cadeia de abastecimento" },
         { id: 106, text: "Campanhas publicitárias de tráfego pago online" },
       ],
       key_resources: [
-        { id: 107, text: "Identidade visual e posicionamento de marca Premium" },
-        { id: 108, text: "Plataforma de e-commerce ágil e de alta conversão (ex: Shopify Plus)" },
+        {
+          id: 107,
+          text: "Identidade visual e posicionamento de marca Premium",
+        },
+        {
+          id: 108,
+          text: "Plataforma de e-commerce ágil e de alta conversão (ex: Shopify Plus)",
+        },
         { id: 109, text: "Centro de distribuição local altamente eficiente" },
       ],
       value_propositions: [
-        { id: 110, text: "Peças orgânicas exclusivas com neutralidade de carbono" },
-        { id: 111, text: "Transparência total em toda a cadeia de suprimentos da peça" },
-        { id: 112, text: "Programa de trocas/devoluções sem atrito de 30 dias" },
+        {
+          id: 110,
+          text: "Peças orgânicas exclusivas com neutralidade de carbono",
+        },
+        {
+          id: 111,
+          text: "Transparência total em toda a cadeia de suprimentos da peça",
+        },
+        {
+          id: 112,
+          text: "Programa de trocas/devoluções sem atrito de 30 dias",
+        },
       ],
       customer_relationships: [
         { id: 113, text: "Atendimento humano e próximo por WhatsApp" },
-        { id: 114, text: "Clube de fidelidade (Pontos VIP e acessos antecipados)" },
-        { id: 115, text: "Promoção massiva do sentido de comunidade em torno de uma causa ambiental" },
+        {
+          id: 114,
+          text: "Clube de fidelidade (Pontos VIP e acessos antecipados)",
+        },
+        {
+          id: 115,
+          text: "Promoção massiva do sentido de comunidade em torno de uma causa ambiental",
+        },
       ],
       channels: [
-        { id: 116, text: "Loja online e Website proprietário otimizado para mobile" },
+        {
+          id: 116,
+          text: "Loja online e Website proprietário otimizado para mobile",
+        },
         { id: 117, text: "Social Commerce via Instagram Shopping e TikTok" },
-        { id: 118, text: "Email Marketing quinzenal exclusivo com curadoria editorial" },
+        {
+          id: 118,
+          text: "Email Marketing quinzenal exclusivo com curadoria editorial",
+        },
       ],
       customer_segments: [
-        { id: 119, text: "Consumidores urbanos Millenials e Gen-Z focados na sustentabilidade" },
+        {
+          id: 119,
+          text: "Consumidores urbanos Millenials e Gen-Z focados na sustentabilidade",
+        },
         { id: 120, text: "Entusiastas do minimalismo e Slow Fashion" },
-        { id: 121, text: "Profissionais com rendimento médio-alto que valorizam moda ética" },
+        {
+          id: 121,
+          text: "Profissionais com rendimento médio-alto que valorizam moda ética",
+        },
       ],
       cost_structure: [
-        { id: 122, text: "Custos com Mercadorias Vendidas (Algodão orgânico e produção sustentável)" },
-        { id: 123, text: "Despesas flutuantes de Embalagem e Logística/Fretes (Especialmente a logística reversa nas trocas)" },
-        { id: 124, text: "Custo de Aquisição de Clientes (Anúncios no Meta e Google)" },
+        {
+          id: 122,
+          text: "Custos com Mercadorias Vendidas (Algodão orgânico e produção sustentável)",
+        },
+        {
+          id: 123,
+          text: "Despesas flutuantes de Embalagem e Logística/Fretes (Especialmente a logística reversa nas trocas)",
+        },
+        {
+          id: 124,
+          text: "Custo de Aquisição de Clientes (Anúncios no Meta e Google)",
+        },
       ],
       revenue_streams: [
-        { id: 125, text: "Massa grossa da receita vem da venda transacional de roupa ao retalho" },
-        { id: 126, text: "Assinatura Mensal recorrente das 'Caixas Surpresa Trimestral'" },
-        { id: 127, text: "Margem premium em colaborações e edições muito limitadas" },
+        {
+          id: 125,
+          text: "Massa grossa da receita vem da venda transacional de roupa ao retalho",
+        },
+        {
+          id: 126,
+          text: "Assinatura Mensal recorrente das 'Caixas Surpresa Trimestral'",
+        },
+        {
+          id: 127,
+          text: "Margem premium em colaborações e edições muito limitadas",
+        },
       ],
     },
   },
@@ -1507,49 +2104,130 @@ const TEMPLATES = {
     name: "Marketplace",
     data: {
       key_partners: [
-        { id: 201, text: "Grandes Seguradoras Internacionais para os veículos e contra danos" },
-        { id: 202, text: "Gateways de pagamento (Stripe/Paypal) para fluxo do dinheiro seguro" },
-        { id: 203, text: "Oficinas locais certificadas para a revisão da frota dos utilizadores" },
+        {
+          id: 201,
+          text: "Grandes Seguradoras Internacionais para os veículos e contra danos",
+        },
+        {
+          id: 202,
+          text: "Gateways de pagamento (Stripe/Paypal) para fluxo do dinheiro seguro",
+        },
+        {
+          id: 203,
+          text: "Oficinas locais certificadas para a revisão da frota dos utilizadores",
+        },
       ],
       key_activities: [
-        { id: 204, text: "Aquisição ativa de usuários na Procura e de veículos na Oferta simultaneamente" },
-        { id: 205, text: "Melhoria constante na UI/UX da App e na facilidade tecnológica da transação" },
-        { id: 206, text: "Gestão rigorosa de 'Confiança e Segurança', mediação de conflitos e exclusões" },
+        {
+          id: 204,
+          text: "Aquisição ativa de usuários na Procura e de veículos na Oferta simultaneamente",
+        },
+        {
+          id: 205,
+          text: "Melhoria constante na UI/UX da App e na facilidade tecnológica da transação",
+        },
+        {
+          id: 206,
+          text: "Gestão rigorosa de 'Confiança e Segurança', mediação de conflitos e exclusões",
+        },
       ],
       key_resources: [
-        { id: 207, text: "A Aplicação Nativa para iOS e Android com boa usabilidade" },
-        { id: 208, text: "O Algoritmo base de Matching e preçificação muito dinâmica conforme o fluxo e procura sazonal" },
-        { id: 209, text: "A robustez do chamado Efeito de Rede nas cidades primárias da empresa" },
+        {
+          id: 207,
+          text: "A Aplicação Nativa para iOS e Android com boa usabilidade",
+        },
+        {
+          id: 208,
+          text: "O Algoritmo base de Matching e preçificação muito dinâmica conforme o fluxo e procura sazonal",
+        },
+        {
+          id: 209,
+          text: "A robustez do chamado Efeito de Rede nas cidades primárias da empresa",
+        },
       ],
       value_propositions: [
-        { id: 210, text: "Value Prop Oferta: Permite donos monetizarem um ativo que de outra forma estava ocioso através do arrendamento" },
-        { id: 211, text: "Value Prop Demanda: Entregamos preços 30% mais baixos e com imensa proximidade/variedade ao viajatente alugador" },
-        { id: 212, text: "Garantimos fiabilidade na transação tecnológica e segurança física a ambos os lados do balcão na equação de aluguer veicular e contratual" },
+        {
+          id: 210,
+          text: "Value Prop Oferta: Permite donos monetizarem um ativo que de outra forma estava ocioso através do arrendamento",
+        },
+        {
+          id: 211,
+          text: "Value Prop Demanda: Entregamos preços 30% mais baixos e com imensa proximidade/variedade ao viajatente alugador",
+        },
+        {
+          id: 212,
+          text: "Garantimos fiabilidade na transação tecnológica e segurança física a ambos os lados do balcão na equação de aluguer veicular e contratual",
+        },
       ],
       customer_relationships: [
-        { id: 213, text: "Sistema rigoroso e reputacional de Reviews em duplo sentido para auto-regulação em massa" },
-        { id: 214, text: "Atendimento digital semi-automatizado e mediação em casos delicados e de conflito real com bots" },
-        { id: 215, text: "Marketing e email para engajar repetibilidade no consumo e atração na vida da marca" },
+        {
+          id: 213,
+          text: "Sistema rigoroso e reputacional de Reviews em duplo sentido para auto-regulação em massa",
+        },
+        {
+          id: 214,
+          text: "Atendimento digital semi-automatizado e mediação em casos delicados e de conflito real com bots",
+        },
+        {
+          id: 215,
+          text: "Marketing e email para engajar repetibilidade no consumo e atração na vida da marca",
+        },
       ],
       channels: [
-        { id: 216, text: "Plataformas Mobile iOS App Store e Android Google Play de modo orgânico através de App Search Ads" },
-        { id: 217, text: "Anúncios em outras plataformas de turismo ou em blogues online e sites focados para SEO" },
-        { id: 218, text: "Convites de programas de referência robustos e sistemas de boca em boca de membros locais nas pequenas cidades da expansão do mercado" },
+        {
+          id: 216,
+          text: "Plataformas Mobile iOS App Store e Android Google Play de modo orgânico através de App Search Ads",
+        },
+        {
+          id: 217,
+          text: "Anúncios em outras plataformas de turismo ou em blogues online e sites focados para SEO",
+        },
+        {
+          id: 218,
+          text: "Convites de programas de referência robustos e sistemas de boca em boca de membros locais nas pequenas cidades da expansão do mercado",
+        },
       ],
       customer_segments: [
-        { id: 219, text: "Os Fornecedores de Carro (Private Owners) que residem nas grandes aéreas suburbanas com viaturas em pouca circulação em garagens" },
-        { id: 220, text: "Os Procuradores do Veículo Alugado (Locals) ou viajantes que precisam de resolver o trajeto específico ou temporal no fim da semana" },
-        { id: 221, text: "Turistas focados apenas em opções baratas à margem das empresas corporativas" },
+        {
+          id: 219,
+          text: "Os Fornecedores de Carro (Private Owners) que residem nas grandes aéreas suburbanas com viaturas em pouca circulação em garagens",
+        },
+        {
+          id: 220,
+          text: "Os Procuradores do Veículo Alugado (Locals) ou viajantes que precisam de resolver o trajeto específico ou temporal no fim da semana",
+        },
+        {
+          id: 221,
+          text: "Turistas focados apenas em opções baratas à margem das empresas corporativas",
+        },
       ],
       cost_structure: [
-        { id: 222, text: "Grande fatia do custo é gasto no Desenvolvimento Informático da Plataforma, do seu Algoritmo e nos respetivos Salários de Engenheiros e equipas" },
-        { id: 223, text: "Elevados Opex na Apólices de Seguros ativadas na massa e que previligiam coberturas abrangentes e amplas" },
-        { id: 224, text: "Custo massivo inicial nas campanhas digitais para dar o match entre oferta/demanda num negócio onde as barreiras ou fricção se sentem muito fortemente nos primordios e arranques da atividade numa primeira localidade" },
+        {
+          id: 222,
+          text: "Grande fatia do custo é gasto no Desenvolvimento Informático da Plataforma, do seu Algoritmo e nos respetivos Salários de Engenheiros e equipas",
+        },
+        {
+          id: 223,
+          text: "Elevados Opex na Apólices de Seguros ativadas na massa e que previligiam coberturas abrangentes e amplas",
+        },
+        {
+          id: 224,
+          text: "Custo massivo inicial nas campanhas digitais para dar o match entre oferta/demanda num negócio onde as barreiras ou fricção se sentem muito fortemente nos primordios e arranques da atividade numa primeira localidade",
+        },
       ],
       revenue_streams: [
-        { id: 225, text: "Uma taxa central e fixa (20%) arrecadada sobre a soma inteira do aluguer do prestador local retida pela plataforma para si antes de lhe passar os proveitos no momento de cada nova venda transacionada" },
-        { id: 226, text: "Outra pequena margem (5 a 10%) para cobertura transacional e apoio à infraestrura de seguro adicionada no valor final para quem aluga o veículo numa base temporal e final na sua compra" },
-        { id: 227, text: "Upgrades e upsells em seguros Premium opcionais aos próprios clientes e em listangens privilegiadas face ao destaque visual e prioritário de determinadas viaturas" },
+        {
+          id: 225,
+          text: "Uma taxa central e fixa (20%) arrecadada sobre a soma inteira do aluguer do prestador local retida pela plataforma para si antes de lhe passar os proveitos no momento de cada nova venda transacionada",
+        },
+        {
+          id: 226,
+          text: "Outra pequena margem (5 a 10%) para cobertura transacional e apoio à infraestrura de seguro adicionada no valor final para quem aluga o veículo numa base temporal e final na sua compra",
+        },
+        {
+          id: 227,
+          text: "Upgrades e upsells em seguros Premium opcionais aos próprios clientes e em listangens privilegiadas face ao destaque visual e prioritário de determinadas viaturas",
+        },
       ],
     },
   },
@@ -1592,7 +2270,9 @@ export default function BusinessModelCanvas() {
   const editNote = (blockId, noteId, text) => {
     setCanvasData((prev) => ({
       ...prev,
-      [blockId]: prev[blockId].map((n) => (n.id === noteId ? { ...n, text } : n)),
+      [blockId]: prev[blockId].map((n) =>
+        n.id === noteId ? { ...n, text } : n,
+      ),
     }));
   };
 
@@ -1630,7 +2310,10 @@ export default function BusinessModelCanvas() {
     }
   };
 
-  const totalItems = Object.values(canvasData).reduce((s, a) => s + a.length, 0);
+  const totalItems = Object.values(canvasData).reduce(
+    (s, a) => s + a.length,
+    0,
+  );
 
   return (
     <div
@@ -1698,7 +2381,14 @@ export default function BusinessModelCanvas() {
           onBlur={(e) => (e.target.style.borderColor = "#3a3228")}
         />
 
-        <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "6px",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <span
             style={{
               color: "#8a8278",
@@ -1740,17 +2430,24 @@ export default function BusinessModelCanvas() {
           ))}
         </div>
 
-        <div style={{ marginLeft: "auto", display: "flex", gap: "8px", alignItems: "center" }}>
+        <div
+          style={{
+            marginLeft: "auto",
+            display: "flex",
+            gap: "8px",
+            alignItems: "center",
+          }}
+        >
           <span style={{ color: "#8a8278", fontSize: "12px" }}>
             {totalItems} {totalItems === 1 ? "item" : "itens"}
           </span>
-          <ExportPanel 
-            canvasData={canvasData} 
-            businessName={businessName} 
+          <ExportPanel
+            canvasData={canvasData}
+            businessName={businessName}
             onImportJSON={(data) => {
               setCanvasData(data.canvasData);
               if (data.businessName) setBusinessName(data.businessName);
-            }} 
+            }}
           />
           <button
             onClick={() => setShowAI((p) => !p)}
@@ -1795,37 +2492,119 @@ export default function BusinessModelCanvas() {
           }}
         >
           <div style={{ gridColumn: "1", gridRow: "1 / 3" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[0]} notes={canvasData.key_partners} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[0]}
+              notes={canvasData.key_partners}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "2", gridRow: "1" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[1]} notes={canvasData.key_activities} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[1]}
+              notes={canvasData.key_activities}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "2", gridRow: "2" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[2]} notes={canvasData.key_resources} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[2]}
+              notes={canvasData.key_resources}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "3", gridRow: "1 / 3" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[3]} notes={canvasData.value_propositions} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[3]}
+              notes={canvasData.value_propositions}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "4", gridRow: "1" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[4]} notes={canvasData.customer_relationships} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[4]}
+              notes={canvasData.customer_relationships}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "4", gridRow: "2" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[5]} notes={canvasData.channels} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[5]}
+              notes={canvasData.channels}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "5", gridRow: "1 / 3" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[6]} notes={canvasData.customer_segments} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[6]}
+              notes={canvasData.customer_segments}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "1 / 3", gridRow: "3" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[7]} notes={canvasData.cost_structure} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[7]}
+              notes={canvasData.cost_structure}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
           <div style={{ gridColumn: "3 / 6", gridRow: "3" }}>
-            <CanvasBlock block={CANVAS_BLOCKS[8]} notes={canvasData.revenue_streams} onAdd={addNote} onDelete={deleteNote} onEdit={editNote} onAnalyze={handleAnalyzeBlock} onBrainstorm={handleBrainstormBlock} />
+            <CanvasBlock
+              block={CANVAS_BLOCKS[8]}
+              notes={canvasData.revenue_streams}
+              onAdd={addNote}
+              onDelete={deleteNote}
+              onEdit={editNote}
+              onAnalyze={handleAnalyzeBlock}
+              onBrainstorm={handleBrainstormBlock}
+            />
           </div>
         </div>
 
         {showAI && (
           <div style={{ width: "195px", flexShrink: 0 }}>
-            <AISidebar canvasData={canvasData} onApplySuggestions={applySuggestion} onAutoFix={handleAutoFix} businessName={businessName} businessPitch={businessPitch} analyzeTarget={analyzeTarget} onClearAnalyzeTarget={() => setAnalyzeTarget(null)} brainstormTarget={brainstormTarget} onClearBrainstormTarget={() => setBrainstormTarget(null)} />
+            <AISidebar
+              canvasData={canvasData}
+              onApplySuggestions={applySuggestion}
+              onAutoFix={handleAutoFix}
+              businessName={businessName}
+              businessPitch={businessPitch}
+              analyzeTarget={analyzeTarget}
+              onClearAnalyzeTarget={() => setAnalyzeTarget(null)}
+              brainstormTarget={brainstormTarget}
+              onClearBrainstormTarget={() => setBrainstormTarget(null)}
+            />
           </div>
         )}
       </div>
