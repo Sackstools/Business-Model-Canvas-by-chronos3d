@@ -825,10 +825,9 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
       }
 
       const solText = parsed.solucao || "Nenhuma sugestão encontrada. Reveja o bloco manualmente.";
-      const safeText = solText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
       
-      btn.innerHTML = `💡 Ver Solução`;
-      btn.dataset.solucao = safeText;
+      btn.textContent = `💡 Ver Solução`;
+      btn.dataset.solucao = solText;
       btn.style.background = "#0d47a133";
       btn.style.borderColor = "#0d47a1";
       btn.style.color = "#82b1ff";
@@ -844,7 +843,7 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
           tt.style.cssText = 'position:fixed;background:#1e1b18;border:1px solid #0d47a1;padding:12px;border-radius:6px;color:#e8e0d4;box-shadow:0 8px 16px rgba(0,0,0,0.8);z-index:999999;font-weight:normal;text-align:left;white-space:normal;line-height:1.4;pointer-events:none;font-size:13px;width:280px;';
           document.body.appendChild(tt);
         }
-        tt.innerHTML = e.currentTarget.dataset.solucao;
+        tt.textContent = e.currentTarget.dataset.solucao;
         tt.style.display = 'block';
         
         const rect = e.currentTarget.getBoundingClientRect();
