@@ -556,17 +556,25 @@ function CanvasBlock({ block, notes, onAdd, onDelete, onEdit, onAnalyze, onBrain
   );
 }
 
-function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, businessPitch, analyzeTarget, onClearAnalyzeTarget, brainstormTarget, onClearBrainstormTarget }) {
+const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
+  for (let i = 0; i < retries; i++) {
+    const resp = await fetch(url, options);
+    if (resp.status === 429 && i < retries - 1) {
+      // Log para consola apenas para acompanhamento técnico invisível
+      console.warn(`429 Rate Limit. Tentativa automática ${i + 1}/${retries} em ${delay}ms...`);
+      await new Promise((r) => setTimeout(r, delay * (i + 1)));
+      continue;
+    }
+    return resp;
+  }
+};
+
+function useAILogic({ canvasData, businessName, businessPitch, analyzeTarget, brainstormTarget, onClearAnalyzeTarget, onClearBrainstormTarget, onAutoFix }) {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(null);
   const [error, setError] = useState(null);
   const [mode, setMode] = useState("fill_gaps");
   const [apiKey, setApiKey] = useState("");
-
-  const modes = [
-    { id: "fill_gaps", label: "Preencher", icon: "🧩", desc: "Sugere itens para blocos vazios" },
-    { id: "validate", label: "Validar", icon: "🔍", desc: "Verifica coerência e erros" },
-  ];
 
   useEffect(() => {
     if (analyzeTarget) {
@@ -677,19 +685,6 @@ Canvas Atual:
 ${summary}`;
   };
 
-  const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
-    for (let i = 0; i < retries; i++) {
-      const resp = await fetch(url, options);
-      if (resp.status === 429 && i < retries - 1) {
-        // Log para consola apenas para acompanhamento técnico invisível
-        console.warn(`429 Rate Limit. Tentativa automática ${i + 1}/${retries} em ${delay}ms...`);
-        await new Promise((r) => setTimeout(r, delay * (i + 1)));
-        continue;
-      }
-      return resp;
-    }
-  };
-
   const runAI = async (overrideTarget = null, overrideMode = null) => {
     setLoading(true);
     setError(null);
@@ -789,7 +784,7 @@ TAREFA: Forneça uma SUGESTÃO PRÁTICA DE SOLUÇÃO. Explique em 1 ou 2 parágr
 
 Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
 
-      const resp = await fetchRetry("https://api.groq.com/openai/v1/chat/completions", {
+      const resp = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -868,6 +863,238 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
       btn.disabled = false;
     }
   };
+
+  return {
+    loading,
+    suggestions,
+    error,
+    mode,
+    setMode,
+    apiKey,
+    setApiKey,
+    runAI,
+    fixValidationProblem
+  };
+}
+
+function AIValidationResult({ suggestions, fixValidationProblem }) {
+  if (!suggestions || suggestions._nota === undefined) return null;
+  return (
+    <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+      {/* Score */}
+      <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D"}44` }}>
+        <div style={{ fontSize: "36px", fontWeight: 900, color: suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D", fontFamily: "'Playfair Display', serif", lineHeight: 1 }}>{suggestions._nota}</div>
+        <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D", marginTop: "2px" }}>{suggestions._nota >= 80 ? "Excelente" : suggestions._nota >= 60 ? "Bom" : suggestions._nota >= 40 ? "Regular" : "Crítico"}</div>
+        <div style={{ fontSize: "11px", color: "#8a8278", marginTop: "6px", lineHeight: 1.4 }}>{suggestions._resumo}</div>
+      </div>
+      {/* Pontos fortes */}
+      {suggestions._pontos_fortes?.length > 0 && (
+        <div>
+          <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#4E8A50", marginBottom: "6px" }}>✅ Pontos Fortes</div>
+          {suggestions._pontos_fortes.map((p, i) => (
+            <div key={i} style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "6px 8px", marginBottom: "4px", borderLeft: "3px solid #4E8A50" }}>{p}</div>
+          ))}
+        </div>
+      )}
+      {/* Problemas */}
+      {suggestions._problemas?.length > 0 && ["alta", "media", "baixa"].map(grav => {
+        const probs = suggestions._problemas.filter(p => (p.gravidade || "media") === grav);
+        if (!probs.length) return null;
+        const gravColor = { alta: "#BF5B3D", media: "#C9A825", baixa: "#6C8EBF" }[grav];
+        const gravIcon = { alta: "🔴", media: "🟡", baixa: "🔵" }[grav];
+        const gravLabel = { alta: "ALTA", media: "MÉDIA", baixa: "BAIXA" }[grav];
+        return (
+          <div key={grav}>
+            <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: gravColor, marginBottom: "6px" }}>{gravIcon} Gravidade {gravLabel} ({probs.length})</div>
+            {probs.map((prob, i) => {
+              const blocoNames = (prob.blocos || []).map(id => { const bl = CANVAS_BLOCKS.find(b => b.id === id); return bl ? bl.icon + " " + bl.title : id; }).join(" ↔ ");
+              const b64Prob = btoa(encodeURIComponent(JSON.stringify(prob)));
+              return (
+                <div key={i} style={{ background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: `3px solid ${gravColor}` }}>
+                  <div style={{ fontSize: "10px", color: gravColor, fontWeight: 700, letterSpacing: "0.05em", marginBottom: "3px" }}>⚠️ {prob.tipo}</div>
+                  <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4 }}>{prob.descricao}</div>
+                  {blocoNames && <div style={{ fontSize: "10px", color: "#8a8278", marginTop: "4px", marginBottom: "6px" }}>📍 {blocoNames}</div>}
+                  <button
+                    onClick={(e) => {
+                      const btn = e.currentTarget;
+                      fixValidationProblem(btn, b64Prob, prob);
+                    }}
+                    style={{ position: "relative", background: `${gravColor}22`, color: gravColor, border: `1px solid ${gravColor}66`, borderRadius: "4px", fontSize: "10px", padding: "4px 8px", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", display: "block", width: "100%" }}
+                    onMouseOver={(e) => { e.currentTarget.style.background = `${gravColor}44`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='block'; }}
+                    onMouseOut={(e) => { e.currentTarget.style.background = `${gravColor}22`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='none'; }}
+                  >
+                    💡 Sugerir Solução
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AIAnalysisResult({ suggestions }) {
+  if (!suggestions || !suggestions._isBlockAnalysis) return null;
+
+  const block = CANVAS_BLOCKS.find(b => b.id === suggestions.target);
+  const data = suggestions.data;
+  const notaColor = data._nota_modulo >= 80 ? "#4E8A50" : data._nota_modulo >= 50 ? "#C9A825" : "#BF5B3D";
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
+      <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${block.accent}44` }}>
+        <div style={{ fontSize: "11px", textTransform: "uppercase", color: block.accent, fontWeight: 700, marginBottom: "8px", letterSpacing: "0.1em" }}>{block.icon} {block.title}</div>
+        <div style={{ fontSize: "36px", fontWeight: 900, color: notaColor, fontFamily: "'DM Sans', sans-serif", lineHeight: 1 }}>{data._nota_modulo}</div>
+        <div style={{ fontSize: "9px", color: "#8a8278", marginTop: "4px" }}>SCORE DE EFICIÊNCIA</div>
+      </div>
+
+      <div style={{ background: "#2a2722", borderRadius: "6px", padding: "12px", borderTop: "1px solid #3a3228" }}>
+        <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#8a8278", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🔍 Análise do Mentor</div>
+        <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.5 }}>
+          {data._analise}
+        </div>
+      </div>
+
+      {data._instrucao && (
+        <div style={{ background: "#1e3a5f22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #3b82f6", borderTop: "1px solid #1e3a5f44" }}>
+          <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#60a5fa", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🎓 Teoria e Método</div>
+          <div style={{ fontSize: "12px", color: "#93c5fd", lineHeight: 1.5 }}>
+            {data._instrucao}
+          </div>
+        </div>
+      )}
+
+      {data._dica_mestre && (
+        <div style={{ background: "#D4915E22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #D4915E", borderTop: "1px solid #D4915E44" }}>
+          <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#D4915E", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🏆 Dica de Mestre</div>
+          <div style={{ fontSize: "12px", color: "#e8e0d4", lineHeight: 1.5, fontStyle: "italic" }}>
+            "{data._dica_mestre}"
+          </div>
+        </div>
+      )}
+
+      {data._pontos_atencao?.length > 0 && (
+        <div>
+          <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#BF5B3D", fontWeight: 800, marginBottom: "8px", letterSpacing: "0.1em" }}>⚠️ Pontos de Atenção</div>
+          {data._pontos_atencao.map((p, i) => (
+            <div key={i} style={{ fontSize: "11px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: "3px solid #BF5B3D" }}>{p}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AISuggestionResult({ suggestions, onApplySuggestions }) {
+  if (!suggestions || suggestions._isBlockAnalysis || suggestions._nota !== undefined) return null;
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px",
+        minHeight: 0,
+      }}
+    >
+      {Object.entries(suggestions).map(([blockId, items]) => {
+        const block = CANVAS_BLOCKS.find((b) => b.id === blockId);
+        if (!block || !items?.length) return null;
+        return (
+          <div key={blockId}>
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                color: block.accent,
+                marginBottom: "4px",
+              }}
+            >
+              {block.icon} {block.title}
+            </div>
+            {items.map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "6px",
+                  marginBottom: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    fontSize: "12px",
+                    color: "#ccc5b9",
+                    lineHeight: 1.4,
+                    background: "#2a2722",
+                    borderRadius: "4px",
+                    padding: "6px 8px",
+                  }}
+                >
+                  {item}
+                </div>
+                <button
+                  onClick={() => onApplySuggestions(blockId, item)}
+                  style={{
+                    background: block.accent + "33",
+                    border: "none",
+                    borderRadius: "4px",
+                    color: block.accent,
+                    cursor: "pointer",
+                    fontSize: "11px",
+                    padding: "4px 8px",
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                  title="Adicionar ao canvas"
+                >
+                  + Usar
+                </button>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, businessPitch, analyzeTarget, onClearAnalyzeTarget, brainstormTarget, onClearBrainstormTarget }) {
+  const {
+    loading,
+    suggestions,
+    error,
+    mode,
+    setMode,
+    apiKey,
+    setApiKey,
+    runAI,
+    fixValidationProblem
+  } = useAILogic({
+    canvasData,
+    businessName,
+    businessPitch,
+    analyzeTarget,
+    brainstormTarget,
+    onClearAnalyzeTarget,
+    onClearBrainstormTarget,
+    onAutoFix
+  });
+
+  const modes = [
+    { id: "fill_gaps", label: "Preencher", icon: "🧩", desc: "Sugere itens para blocos vazios" },
+    { id: "validate", label: "Validar", icon: "🔍", desc: "Verifica coerência e erros" },
+  ];
 
   return (
     <div
@@ -974,191 +1201,9 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
         </div>
       )}
 
-      {suggestions && mode === "validate" && suggestions._nota !== undefined && (
-        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
-          {/* Score */}
-          <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D"}44` }}>
-            <div style={{ fontSize: "36px", fontWeight: 900, color: suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D", fontFamily: "'Playfair Display', serif", lineHeight: 1 }}>{suggestions._nota}</div>
-            <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: suggestions._nota >= 80 ? "#4E8A50" : suggestions._nota >= 50 ? "#C9A825" : "#BF5B3D", marginTop: "2px" }}>{suggestions._nota >= 80 ? "Excelente" : suggestions._nota >= 60 ? "Bom" : suggestions._nota >= 40 ? "Regular" : "Crítico"}</div>
-            <div style={{ fontSize: "11px", color: "#8a8278", marginTop: "6px", lineHeight: 1.4 }}>{suggestions._resumo}</div>
-          </div>
-          {/* Pontos fortes */}
-          {suggestions._pontos_fortes?.length > 0 && (
-            <div>
-              <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#4E8A50", marginBottom: "6px" }}>✅ Pontos Fortes</div>
-              {suggestions._pontos_fortes.map((p, i) => (
-                <div key={i} style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "6px 8px", marginBottom: "4px", borderLeft: "3px solid #4E8A50" }}>{p}</div>
-              ))}
-            </div>
-          )}
-          {/* Problemas */}
-          {suggestions._problemas?.length > 0 && ["alta", "media", "baixa"].map(grav => {
-            const probs = suggestions._problemas.filter(p => (p.gravidade || "media") === grav);
-            if (!probs.length) return null;
-            const gravColor = { alta: "#BF5B3D", media: "#C9A825", baixa: "#6C8EBF" }[grav];
-            const gravIcon = { alta: "🔴", media: "🟡", baixa: "🔵" }[grav];
-            const gravLabel = { alta: "ALTA", media: "MÉDIA", baixa: "BAIXA" }[grav];
-            return (
-              <div key={grav}>
-                <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: gravColor, marginBottom: "6px" }}>{gravIcon} Gravidade {gravLabel} ({probs.length})</div>
-                {probs.map((prob, i) => {
-                  const blocoNames = (prob.blocos || []).map(id => { const bl = CANVAS_BLOCKS.find(b => b.id === id); return bl ? bl.icon + " " + bl.title : id; }).join(" ↔ ");
-                  const b64Prob = btoa(encodeURIComponent(JSON.stringify(prob)));
-                  return (
-                    <div key={i} style={{ background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: `3px solid ${gravColor}` }}>
-                      <div style={{ fontSize: "10px", color: gravColor, fontWeight: 700, letterSpacing: "0.05em", marginBottom: "3px" }}>⚠️ {prob.tipo}</div>
-                      <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.4 }}>{prob.descricao}</div>
-                      {blocoNames && <div style={{ fontSize: "10px", color: "#8a8278", marginTop: "4px", marginBottom: "6px" }}>📍 {blocoNames}</div>}
-                      <button
-                        onClick={(e) => {
-                          const btn = e.currentTarget;
-                          fixValidationProblem(btn, b64Prob, prob);
-                        }}
-                        style={{ position: "relative", background: `${gravColor}22`, color: gravColor, border: `1px solid ${gravColor}66`, borderRadius: "4px", fontSize: "10px", padding: "4px 8px", cursor: "pointer", fontWeight: 600, fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", display: "block", width: "100%" }}
-                        onMouseOver={(e) => { e.currentTarget.style.background = `${gravColor}44`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='block'; }}
-                        onMouseOut={(e) => { e.currentTarget.style.background = `${gravColor}22`; const tt = e.currentTarget.querySelector('.sol-tooltip'); if(tt) tt.style.display='none'; }}
-                      >
-                        💡 Sugerir Solução
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {suggestions && suggestions._isBlockAnalysis && (
-        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
-          {(() => {
-            const block = CANVAS_BLOCKS.find(b => b.id === suggestions.target);
-            const data = suggestions.data;
-            const notaColor = data._nota_modulo >= 80 ? "#4E8A50" : data._nota_modulo >= 50 ? "#C9A825" : "#BF5B3D";
-            return (
-              <>
-                <div style={{ textAlign: "center", padding: "12px", background: "#2a2722", borderRadius: "8px", border: `2px solid ${block.accent}44` }}>
-                  <div style={{ fontSize: "11px", textTransform: "uppercase", color: block.accent, fontWeight: 700, marginBottom: "8px", letterSpacing: "0.1em" }}>{block.icon} {block.title}</div>
-                  <div style={{ fontSize: "36px", fontWeight: 900, color: notaColor, fontFamily: "'DM Sans', sans-serif", lineHeight: 1 }}>{data._nota_modulo}</div>
-                  <div style={{ fontSize: "9px", color: "#8a8278", marginTop: "4px" }}>SCORE DE EFICIÊNCIA</div>
-                </div>
-                
-                <div style={{ background: "#2a2722", borderRadius: "6px", padding: "12px", borderTop: "1px solid #3a3228" }}>
-                  <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#8a8278", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🔍 Análise do Mentor</div>
-                  <div style={{ fontSize: "12px", color: "#ccc5b9", lineHeight: 1.5 }}>
-                    {data._analise}
-                  </div>
-                </div>
-
-                {data._instrucao && (
-                  <div style={{ background: "#1e3a5f22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #3b82f6", borderTop: "1px solid #1e3a5f44" }}>
-                    <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#60a5fa", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🎓 Teoria e Método</div>
-                    <div style={{ fontSize: "12px", color: "#93c5fd", lineHeight: 1.5 }}>
-                      {data._instrucao}
-                    </div>
-                  </div>
-                )}
-
-                {data._dica_mestre && (
-                  <div style={{ background: "#D4915E22", borderRadius: "6px", padding: "12px", borderLeft: "4px solid #D4915E", borderTop: "1px solid #D4915E44" }}>
-                    <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#D4915E", fontWeight: 800, marginBottom: "6px", letterSpacing: "0.1em" }}>🏆 Dica de Mestre</div>
-                    <div style={{ fontSize: "12px", color: "#e8e0d4", lineHeight: 1.5, fontStyle: "italic" }}>
-                      "{data._dica_mestre}"
-                    </div>
-                  </div>
-                )}
-
-                {data._pontos_atencao?.length > 0 && (
-                  <div>
-                    <div style={{ fontSize: "10px", textTransform: "uppercase", color: "#BF5B3D", fontWeight: 800, marginBottom: "8px", letterSpacing: "0.1em" }}>⚠️ Pontos de Atenção</div>
-                    {data._pontos_atencao.map((p, i) => (
-                      <div key={i} style={{ fontSize: "11px", color: "#ccc5b9", lineHeight: 1.4, background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: "3px solid #BF5B3D" }}>{p}</div>
-                    ))}
-                  </div>
-                )}
-              </>
-            );
-          })()}
-        </div>
-      )}
-
-      {suggestions && !suggestions._isBlockAnalysis && !(mode === "validate" && suggestions._nota !== undefined) && (
-        <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            minHeight: 0,
-          }}
-        >
-          {Object.entries(suggestions).map(([blockId, items]) => {
-            const block = CANVAS_BLOCKS.find((b) => b.id === blockId);
-            if (!block || !items?.length) return null;
-            return (
-              <div key={blockId}>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: block.accent,
-                    marginBottom: "4px",
-                  }}
-                >
-                  {block.icon} {block.title}
-                </div>
-                {items.map((item, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "6px",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        flex: 1,
-                        fontSize: "12px",
-                        color: "#ccc5b9",
-                        lineHeight: 1.4,
-                        background: "#2a2722",
-                        borderRadius: "4px",
-                        padding: "6px 8px",
-                      }}
-                    >
-                      {item}
-                    </div>
-                    <button
-                      onClick={() => onApplySuggestions(blockId, item)}
-                      style={{
-                        background: block.accent + "33",
-                        border: "none",
-                        borderRadius: "4px",
-                        color: block.accent,
-                        cursor: "pointer",
-                        fontSize: "11px",
-                        padding: "4px 8px",
-                        fontWeight: 600,
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                        fontFamily: "'DM Sans', sans-serif",
-                      }}
-                      title="Adicionar ao canvas"
-                    >
-                      + Usar
-                    </button>
-                  </div>
-                ))}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {mode === "validate" && <AIValidationResult suggestions={suggestions} fixValidationProblem={fixValidationProblem} />}
+      <AIAnalysisResult suggestions={suggestions} />
+      {mode !== "validate" && <AISuggestionResult suggestions={suggestions} onApplySuggestions={onApplySuggestions} />}
 
       {!suggestions && !loading && (
         <div
