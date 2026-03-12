@@ -87,9 +87,9 @@ const CANVAS_BLOCKS = [
   },
 ];
 
-const CANVAS_BLOCKS_MAP = new Map(CANVAS_BLOCKS.map((b) => [b.id, b]));
-
-const INITIAL_STATE = Object.fromEntries(CANVAS_BLOCKS.map((b) => [b.id, []]));
+const INITIAL_STATE = Object.fromEntries(
+  CANVAS_BLOCKS.map((b) => [b.id, []])
+);
 
 const BLOCK_RULES = {
   customer_segments:
@@ -657,6 +657,9 @@ function CanvasBlock({
 }
 
 const fetchWithRetry = async (url, options, retries = 3, delay = 3000) => {
+  if (retries < 1) {
+    throw new Error("\`retries\` must be a positive number.");
+  }
   for (let i = 0; i < retries; i++) {
     const resp = await fetch(url, options);
     if (resp.status === 429 && i < retries - 1) {
@@ -702,7 +705,7 @@ function useAILogic({ canvasData, businessName, businessPitch, analyzeTarget, br
     const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
 
     if (currentMode === "analyze_block" && targetBlockId) {
-      const block = CANVAS_BLOCKS_MAP.get(targetBlockId);
+      const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
       const items = canvasData[block.id] || [];
       const rule = BLOCK_RULES[targetBlockId] || "";
 
@@ -734,7 +737,7 @@ IMPORTANTE: Responda APENAS com JSON válido. NUNCA use aspas duplas no seu text
     }
 
     if (currentMode === "brainstorm_block" && targetBlockId) {
-      const block = CANVAS_BLOCKS_MAP.get(targetBlockId);
+      const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
       const rule = BLOCK_RULES[targetBlockId] || "";
 
       return `Você é um co-fundador visionário e estrategista focado em ideação técnica e mercadológica para um Business Model Canvas.
