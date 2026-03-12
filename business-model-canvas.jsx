@@ -84,6 +84,8 @@ const CANVAS_BLOCKS = [
   },
 ];
 
+const CANVAS_BLOCKS_MAP = Object.fromEntries(CANVAS_BLOCKS.map(b => [b.id, b]));
+
 const INITIAL_STATE = Object.fromEntries(
   CANVAS_BLOCKS.map((b) => [b.id, []])
 );
@@ -594,7 +596,7 @@ function AISidebar({ canvasData, onApplySuggestions, onAutoFix, businessName, bu
     const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
 
     if (currentMode === "analyze_block" && targetBlockId) {
-      const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
+      const block = CANVAS_BLOCKS_MAP[targetBlockId];
       const items = canvasData[block.id] || [];
       const rule = BLOCK_RULES[targetBlockId] || "";
 
@@ -626,7 +628,7 @@ IMPORTANTE: Responda APENAS com JSON válido. NUNCA use aspas duplas no seu text
     }
 
     if (currentMode === "brainstorm_block" && targetBlockId) {
-      const block = CANVAS_BLOCKS.find((b) => b.id === targetBlockId);
+      const block = CANVAS_BLOCKS_MAP[targetBlockId];
       const rule = BLOCK_RULES[targetBlockId] || "";
 
       return `Você é um co-fundador visionário e estrategista focado em ideação técnica e mercadológica para um Business Model Canvas.
@@ -1002,7 +1004,7 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
               <div key={grav}>
                 <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: gravColor, marginBottom: "6px" }}>{gravIcon} Gravidade {gravLabel} ({probs.length})</div>
                 {probs.map((prob, i) => {
-                  const blocoNames = (prob.blocos || []).map(id => { const bl = CANVAS_BLOCKS.find(b => b.id === id); return bl ? bl.icon + " " + bl.title : id; }).join(" ↔ ");
+                  const blocoNames = (prob.blocos || []).map(id => { const bl = CANVAS_BLOCKS_MAP[id]; return bl ? bl.icon + " " + bl.title : id; }).join(" ↔ ");
                   const b64Prob = btoa(encodeURIComponent(JSON.stringify(prob)));
                   return (
                     <div key={i} style={{ background: "#2a2722", borderRadius: "4px", padding: "8px", marginBottom: "6px", borderLeft: `3px solid ${gravColor}` }}>
@@ -1032,7 +1034,7 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
       {suggestions && suggestions._isBlockAnalysis && (
         <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px", minHeight: 0 }}>
           {(() => {
-            const block = CANVAS_BLOCKS.find(b => b.id === suggestions.target);
+            const block = CANVAS_BLOCKS_MAP[suggestions.target];
             const data = suggestions.data;
             const notaColor = data._nota_modulo >= 80 ? "#4E8A50" : data._nota_modulo >= 50 ? "#C9A825" : "#BF5B3D";
             return (
@@ -1094,7 +1096,7 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
           }}
         >
           {Object.entries(suggestions).map(([blockId, items]) => {
-            const block = CANVAS_BLOCKS.find((b) => b.id === blockId);
+            const block = CANVAS_BLOCKS_MAP[blockId];
             if (!block || !items?.length) return null;
             return (
               <div key={blockId}>
