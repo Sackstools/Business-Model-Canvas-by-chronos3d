@@ -88,6 +88,10 @@ const INITIAL_STATE = Object.fromEntries(
   CANVAS_BLOCKS.map((b) => [b.id, []])
 );
 
+const CANVAS_BLOCKS_MAP = Object.fromEntries(
+  CANVAS_BLOCKS.map((b) => [b.id, b])
+);
+
 const BLOCK_RULES = {
   customer_segments: "TESE: Segmentos de Clientes definem os diferentes grupos de pessoas ou organizações que a empresa visa alcançar. É o 'PARA QUEM'. O preenchimento eficiente exige hiper-segmentação: evite o 'público geral'. Foque em nichos com dores idênticas e comportamentos de compra semelhantes.",
   value_propositions: "TESE: Proposta de Valor é o motivo pelo qual clientes escolhem sua empresa em vez de outra. Responde 'O QUÊ' você resolve. Deve focar no ganho (tempo, dinheiro, status) ou na redução de dor, e não em listas técnicas de funcionalidades.",
@@ -1094,7 +1098,7 @@ Retorne JSON: {"solucao": "Texto da sua sugestão..."}`;
           }}
         >
           {Object.entries(suggestions).map(([blockId, items]) => {
-            const block = CANVAS_BLOCKS.find((b) => b.id === blockId);
+            const block = CANVAS_BLOCKS_MAP[blockId];
             if (!block || !items?.length) return null;
             return (
               <div key={blockId}>

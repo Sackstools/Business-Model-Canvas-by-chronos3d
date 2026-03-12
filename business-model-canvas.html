@@ -646,6 +646,8 @@
       { col: "3 / 6", row: "3" },
     ];
 
+    const BLOCKS_MAP = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
+
     const TEMPLATES = {
       blank: {},
       saas: {
@@ -1168,7 +1170,7 @@ ${summary}`;
       area.className = 'suggestions-area';
 
       Object.entries(suggestions).forEach(([blockId, items]) => {
-        const block = BLOCKS.find(b => b.id === blockId);
+        const block = BLOCKS_MAP[blockId];
         if (!block || !items?.length) return;
         const section = document.createElement('div');
         section.innerHTML = `<div class="suggestion-block-title" style="color:${block.accent}">${block.icon} ${block.title}</div>`;
