@@ -914,9 +914,9 @@ ${summary}`;
     try {
       const prob = probObj || JSON.parse(decodeURIComponent(atob(b64Prob)));
       const affectedBlocks =
-        prob.blocos && prob.blocos.length
+        prob.blocos?.length
           ? prob.blocos
-          : CANVAS_BLOCKS.map((b) => b.id);
+          : Array.from(CANVAS_BLOCKS_MAP.keys());
 
       const currentStatus = {};
       affectedBlocks.forEach((bId) => {
