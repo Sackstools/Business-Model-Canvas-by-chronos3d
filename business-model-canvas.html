@@ -634,7 +634,13 @@
       { id: "revenue_streams", title: "Fontes de Receita", icon: "💰", hint: "Como a empresa ganha dinheiro com cada segmento?", examples: "Ex: Venda de ativo, Assinatura mensal, Aluguel, Licenciamento, Taxa de corretagem.", color: "#C8E6C9", accent: "#4E8A50" },
     ];
 
-    const BLOCKS_MAP = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
+    const BLOCKS_MAP = BLOCKS.reduce((acc, b) => {
+      if (acc[b.id]) {
+        console.warn('Duplicate block ID detected: "' + b.id + '". The application might not behave as expected.');
+      }
+      acc[b.id] = b;
+      return acc;
+    }, {});
 
     const GRID_POS = [
       { col: "1", row: "1 / 3" },
