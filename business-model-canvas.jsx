@@ -1601,15 +1601,18 @@ export default function BusinessModelCanvas() {
   const handleAutoFix = (updates) => {
     setCanvasData((prev) => {
       const next = { ...prev };
-      Object.entries(updates).forEach(([bId, newItems]) => {
-        if (Array.isArray(newItems) && next[bId] !== undefined) {
-          next[bId] = newItems.map((txt, idx) => ({
-            id: Date.now() + idx + Math.random(),
-            text: txt.replace(/^(⚠️|🔄|✨|✅|💡)\s*/, ""),
-            color: "#ffffff",
-          }));
+      for (const bId in updates) {
+        if (Object.prototype.hasOwnProperty.call(updates, bId)) {
+          const newItems = updates[bId];
+          if (Array.isArray(newItems) && next[bId] !== undefined) {
+            next[bId] = newItems.map((txt, idx) => ({
+              id: Date.now() + idx + Math.random(),
+              text: txt.replace(/^(⚠️|🔄|✨|✅|💡)\s*/, ""),
+              color: "#ffffff",
+            }));
+          }
         }
-      });
+      }
       return next;
     });
   };
