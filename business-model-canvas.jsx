@@ -693,7 +693,7 @@ ${summary}`;
       const currentMode = overrideMode || mode;
       const targetBlockId = overrideTarget || analyzeTarget || brainstormTarget;
       const isAnalysis = currentMode === "analyze_block";
-      const response = await fetchRetry("https://api.groq.com/openai/v1/chat/completions", {
+      const response = await fetchWithRetry("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { 
            "Content-Type": "application/json",
